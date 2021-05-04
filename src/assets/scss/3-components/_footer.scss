@@ -1,0 +1,16 @@
+footer.footer {
+  background: $white;
+  position: fixed;
+  bottom: 0%;
+  width: 82%;
+  border-top: 1px solid $gray-300;
+  padding: $spacer $spacer * 0.75;
+
+  ul {
+    margin-bottom: 0;
+  }
+
+  @include media-breakpoint-down(md) {
+    width: 100vw;
+  }
+}
