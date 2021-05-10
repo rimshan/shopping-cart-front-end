@@ -36,6 +36,7 @@ import ThemeClassic from "../pages/layouts/ThemeClassic";
 import ThemeCorporate from "../pages/layouts/ThemeCorporate";
 import ThemeModern from "../pages/layouts/ThemeModern";
 import AuthLayout from "../layouts/Auth";
+import LandignLayout from "../layouts/Landing";
 
 // Misc
 import Blank from "../pages/misc/Blank";
@@ -126,8 +127,8 @@ const GoogleMaps = async(() => import("../pages/maps/GoogleMaps"));
 const landingRoutes = {
   path: "/",
   name: "Auth",
-  component: SignUp,
-  layouts: AuthLayout,
+  component: Landing,
+  layouts: LandignLayout,
   children: null
 };
 
@@ -203,7 +204,7 @@ const dashboardRoutes = {
   name: "Dashboard",
   icon: SlidersIcon,
   containsHome: true,
-  component: Default,
+  component: Ecommerce,
   // children: [
   //   {
   //     path: "/dashboard/default",

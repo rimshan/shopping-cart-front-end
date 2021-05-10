@@ -56,11 +56,11 @@ import brandRedux from "../../assets/img/brands/redux.svg";
 const Navigation = () => (
   <Navbar dark expand className="navbar-landing">
     <NavbarBrand href="/">
-      <Box title="AppStack" />
-      AppStack
+      <Box title="Space Code" />
+      Space Code
     </NavbarBrand>
     <Nav className="ml-auto" navbar>
-      <NavItem className="d-none d-md-inline-block">
+      {/* <NavItem className="d-none d-md-inline-block">
         <NavLink href="/dashboard/default" target="_blank" active>
           Preview
         </NavLink>
@@ -69,14 +69,20 @@ const Navigation = () => (
         <NavLink href="/docs/introduction" target="_blank" active>
           Docs
         </NavLink>
-      </NavItem>
+      </NavItem> */}
       <NavItem className="d-none d-md-inline-block">
-        <NavLink href="/docs/changelog" target="_blank" active>
-          Changelog
-        </NavLink>
+        <Button
+          href="auth/sign-in"
+          rel="noopener noreferrer"
+          color="warning"
+          className="ml-2"
+        >
+          Sign In
+    </Button>
       </NavItem>
     </Nav>
-    <Button
+
+    {/* <Button
       href="https://themes.getbootstrap.com/product/appstack-react-admin-dashboard-template/"
       target="_blank"
       rel="noopener noreferrer"
@@ -84,7 +90,7 @@ const Navigation = () => (
       className="ml-2"
     >
       Purchase
-    </Button>
+    </Button> */}
   </Navbar>
 );
 

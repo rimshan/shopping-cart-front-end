@@ -2,7 +2,7 @@ import React from "react";
 import AccountSettings from "./AccountSettings";
 import CompanySettings from "./CompanySettings";
 import UsersStaffSettings from "./UsersStaffSettings";
-import VehiclesSettings from "./VehiclesSettings";
+import CategoriesSettings from "./CategoriesSettings";
 import BranchesSettings from "./BranchesSettings";
 import {
   Card,
@@ -46,11 +46,11 @@ const Navigation = props => (
       <ListGroupItem
         tag="a"
         href="#"
-        active={props.state.view === "vehicles" ? true : false}
+        active={props.state.view === "categories" ? true : false}
         action
-        onClick={() => props.onNavigationClick("vehicles")}
+        onClick={() => props.onNavigationClick("categories")}
       >
-        Vehicles
+        Categoires
       </ListGroupItem>
       <ListGroupItem
         tag="a"
@@ -94,7 +94,7 @@ class Settings extends React.Component {
             {this.state.view === "account" && <AccountSettings />}
             {this.state.view === "company" && <CompanySettings />}
             {this.state.view === "users_staff" && <UsersStaffSettings />}
-            {this.state.view === "vehicles" && <VehiclesSettings />}
+            {this.state.view === "categories" && <CategoriesSettings />}
             {this.state.view === "branches" && <BranchesSettings />}
           </Col>
         </Row>

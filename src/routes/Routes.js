@@ -44,11 +44,12 @@ const childRoutes = (Layout, routes) =>
     )
   );
 
+
 const Routes = () => (
   <Router>
     <ScrollToTop>
       <Switch>
-        {childRoutes(AuthLayout, landingRoutes)}
+        {childRoutes(LandingLayout, landingRoutes)}
         {childRoutes(DashboardLayout, dashboardRoutes)}
         {childRoutes(AuthLayout, pageRoutes)}
         <Route
