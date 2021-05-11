@@ -15,7 +15,8 @@ import {
   Users as UsersIcon,
   Calendar as CalendarIcon,
   Settings as SettingsIcon,
-  DollarSign as DollarSignIcon
+  DollarSign as DollarSignIcon,
+  Briefcase as BriefcaseIcon,
 } from "react-feather";
 
 // Landing
@@ -66,6 +67,19 @@ import Introduction from "../pages/docs/Introduction";
 import Installation from "../pages/docs/Installation";
 import Plugins from "../pages/docs/Plugins";
 import Changelog from "../pages/docs/Changelog";
+
+//Items
+
+import Items from "../pages/Items/Items";
+import ItemsEdit from "../pages/Items/ItemsEdit";
+import NewItem from "../pages/Items/NewItem";
+import Transfers from "../pages/Items/Transfers";
+import InventoryAdjustments from "../pages/Items/InventoryAdjustments";
+import NewInventoryAdjustments from "../pages/Items/NewInventoryAdjustments";
+import InventoryAdjustmentView from "../pages/Items/InventoryAdjustmentView";
+import Inventory from "../pages/Items/Inventory";
+import NewTransfer from "../pages/Items/NewTransfer";
+import TransferView from "../pages/Items/TransferView";
 
 // Customers
 const Customers = async(() => import("../pages/customers/Customer"));
@@ -122,6 +136,9 @@ const Calendar = async(() => import("../pages/calendar/Calendar"));
 // Maps
 const VectorMaps = async(() => import("../pages/maps/VectorMaps"));
 const GoogleMaps = async(() => import("../pages/maps/GoogleMaps"));
+
+
+
 
 // Routes
 const landingRoutes = {
@@ -286,6 +303,83 @@ const pageRoutes = {
       component: Blank
     }
   ]
+};
+
+const itemsRoute = {
+  path: "/items",
+  name: "Items",
+  icon: BriefcaseIcon,
+  component: Items,
+  // children: [
+  //   {
+  //     path: "/items/all",
+  //     name: "All Items",
+  //     component: Items,
+  //   },
+  //   {
+  //     path: "/items/inventory",
+  //     name: "Inventory",
+  //     component: Inventory,
+  //   },
+  //   // {
+  //   //   path: "/items/transfers",
+  //   //   name: "Transfers",
+  //   //   component: Transfers,
+  //   // },
+  //   {
+  //     path: "/items/inventory-adjustments",
+  //     name: "Inventory Adjustments",
+  //     component: InventoryAdjustments,
+  //   },
+  // ],
+};
+
+const inventoryAdjustmentViewRoute = {
+  path: "/items/inventory-adjustment/:id",
+  name: "Transfer View",
+  icon: MonitorIcon,
+  component: InventoryAdjustmentView,
+  children: null,
+};
+
+const newItemsRoute = {
+  path: "/items/new",
+  name: "New Items",
+  icon: BriefcaseIcon,
+  component: NewItem,
+  children: null,
+};
+
+const itemsEditRoute = {
+  path: "/items/edit/:id",
+  name: "Transfer View",
+  icon: MonitorIcon,
+  component: ItemsEdit,
+  children: null,
+};
+
+const newInventoryAdjustmentsRoute = {
+  path: "/items/inventory-adjustments/new",
+  name: "New Inventory Adjustments",
+  icon: BriefcaseIcon,
+  component: NewInventoryAdjustments,
+  children: null,
+};
+
+const newTransferRoute = {
+  path: "/items/transfers/new",
+  name: "New Transfer",
+  icon: BriefcaseIcon,
+  component: NewTransfer,
+  children: null,
+};
+
+const transferViewRoute = {
+  path: "/items/transfer/:id",
+  name: "Transfer View",
+  icon: MonitorIcon,
+  component: TransferView,
+  children: null,
 };
 
 const authRoutes = {
@@ -611,7 +705,14 @@ export const dashboard = [
   iconRoutes,
   calendarRoutes,
   mapRoutes,
-  privateRoutes
+  privateRoutes,
+  itemsRoute,
+  itemsEditRoute,
+  newItemsRoute,
+  newInventoryAdjustmentsRoute,
+  newTransferRoute,
+  transferViewRoute,
+  inventoryAdjustmentViewRoute,
 ];
 
 // Landing specific routes
@@ -628,6 +729,7 @@ export default [
   trialsRoutes,
   paymentsRoutes,
   settingsRoutes,
+  itemsRoute,
 
   // pageRoutes,
   // authRoutes,
