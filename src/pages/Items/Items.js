@@ -176,7 +176,6 @@ class Items extends React.Component {
       item_options: [],
     });
     this.props.items(pageSize).then((items, id) => {
-      console.log(items);
       if (items.items && items.items.status === 200) {
         this.setState({
           items: items.items.data,

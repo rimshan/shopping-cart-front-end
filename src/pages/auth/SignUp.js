@@ -234,13 +234,7 @@ class SignUp extends React.Component {
       user: {},
       rememberMe: true,
       values: {
-        first_name: "",
-        last_name: "",
-        email: "",
-        contact_number: "",
-        organization_name: "",
-        password: "",
-        c_password: "",
+        role:"2",
         scopes: "admin",
       },
     };
@@ -282,12 +276,12 @@ class SignUp extends React.Component {
     console.log(user)
     this.props.register(this.state.values).then((user) => {
       if (user) {
-        if (user.status === 201) {
+        if (user.status === 200) {
           const newState = { ...this.state };
           newState.loading = false;
           newState.toastrInstance = "success";
           newState.toastrTitle = "Success";
-          newState.toastrMessage = user.data.message;
+          newState.toastrMessage = "You have successfully registered";
           this.setState(newState);
 
           this.showToastr();
@@ -297,7 +291,7 @@ class SignUp extends React.Component {
           newState.loading = false;
           newState.toastrInstance = "error";
           newState.toastrTitle = "Error";
-          newState.toastrMessage = user.response.data.message;
+          newState.toastrMessage = user.data.error;
           this.setState(newState);
 
           this.showToastr();

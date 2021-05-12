@@ -1,10 +1,13 @@
 import React from "react";
 import { Provider } from "react-redux";
 import ReduxToastr from "react-redux-toastr";
-
+import { requestInterceptor } from "./services/requestInterceptor";
+import { responseInterceptor } from "./services/responseInterceptor";
 import store from "./redux/store/index";
 import Routes from "./routes/Routes";
 
+requestInterceptor();
+responseInterceptor();
 const App = () => (
   <Provider store={store}>
     <Routes />

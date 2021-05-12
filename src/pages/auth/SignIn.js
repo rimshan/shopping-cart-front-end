@@ -37,7 +37,7 @@ class SignIn extends React.Component {
     rememberMe: true,
     hour: null,
     values: {
-      username: "",
+      email: "",
       password: "",
     },
   };
@@ -47,7 +47,7 @@ class SignIn extends React.Component {
     const newState = { ...this.state };
     const rememberMe = localStorage.getItem("rememberMe") === "true";
     const values = rememberMe ? JSON.parse(localStorage.getItem("values")) : "";
-    newState.values["username"] = values.username;
+    newState.values["email"] = values.email;
     newState.values["password"] = values.password;
     this.setState({
       user: JSON.parse(localStorage.getItem("user")),
@@ -92,17 +92,17 @@ class SignIn extends React.Component {
   handleInvalidSubmit = (event, errors, values) => {
     const newState = { ...this.state };
     if (
-      errors[0] === "username" &&
+      errors[0] === "email" &&
       errors.length === 1 &&
-      values.username !== ""
+      values.email !== ""
     ) {
       newState.toastrInstance = "error";
       newState.toastrTitle = "";
       newState.toastrMessage = "Email is not valid";
     } else if (
-      errors[0] === "username" &&
+      errors[0] === "email" &&
       errors.length === 1 &&
-      values.username === ""
+      values.email === ""
     ) {
       newState.toastrInstance = "error";
       newState.toastrTitle = "";
@@ -129,17 +129,16 @@ class SignIn extends React.Component {
     const { from } = this.props.location.state || {
       from: { pathname: "/dashboard" },
     };
-    const { username, password } = this.state.values;
+    const { email, password } = this.state.values;
     const { rememberMe, values } = this.state;
     localStorage.setItem("rememberMe", rememberMe);
     localStorage.setItem("values", rememberMe ? JSON.stringify(values) : "");
-    this.props.history.push(from);
-    this.props.login(username, password).then((user) => {
+    this.props.login(email, password).then((user) => {
       if (user) {
         if (user.status === 200) {
           this.props.getUser().then((user) => {
             this.setState({ loading: false });
-            this.props.history.push(from);
+            this.props.history.push(from)
           });
         } else {
           this.setState({ loading: false });
@@ -171,7 +170,7 @@ class SignIn extends React.Component {
             <div className="m-sm-4">
               <div className="text-center">
                 {this.state.user
-                  ? this.state.user.email === this.state.values.username &&
+                  ? this.state.user.email === this.state.values.email &&
                     (this.state.user.last_name ? (
                       <Avatar
                         src={this.state.user.profile_picture_url}
@@ -202,8 +201,8 @@ class SignIn extends React.Component {
                   <AvField
                     bsSize="lg"
                     type="email"
-                    name="username"
-                    value={this.state.values.username || ""}
+                    name="email"
+                    value={this.state.values.email || ""}
                     placeholder="Enter your email"
                     validate={{
                       required: {
@@ -215,7 +214,7 @@ class SignIn extends React.Component {
                       },
                     }}
                     onChange={(event) =>
-                      this.handleFieldChange("username", event.target.value)
+                      this.handleFieldChange("email", event.target.value)
                     }
                   />
                 </FormGroup>

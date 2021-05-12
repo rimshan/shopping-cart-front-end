@@ -14,23 +14,23 @@ const API_URL = process.env.REACT_APP_API_URL;
 function register(user) {
   return axios({
     method: "post",
-    url: API_URL + `auth/register`,
+    url: API_URL + `users/signup`,
     data: user,
   })
     .then(function (response) {
       return response;
     })
     .catch((error) => {
-      return error;
+      return error.response;
     });
 }
 
-function login(username, password) {
+function login(email, password) {
   return axios
-    .post(API_URL + `users/login`, { username: username, password: password })
+    .post(API_URL + `users/login`, { email: email, password: password })
     .then((user) => {
       //localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("access_token", user.data.access_token);
+      localStorage.setItem("access_token", user.data.token);
       localStorage.setItem("refresh_token", user.data.refresh_token);
       return user;
     })

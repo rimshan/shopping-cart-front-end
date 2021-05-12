@@ -38,11 +38,11 @@ function register(user) {
   }
 }
 
-function login(username, password) {
+function login(email, password) {
   return (dispatch) => {
-    dispatch(request({ username }));
+    dispatch(request({ email }));
 
-    return authService.login(username, password).then(
+    return authService.login(email, password).then(
       (user) => {
         dispatch(success(user));
         return user;
