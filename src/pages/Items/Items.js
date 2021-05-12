@@ -14,15 +14,12 @@ import {
   CardTitle,
   Container,
   Button,
-  UncontrolledDropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   UncontrolledButtonDropdown,
 } from "reactstrap";
-import { MoreHorizontal, Edit2 } from "react-feather";
+import {  Edit2 } from "react-feather";
 
 import BootstrapTable from "react-bootstrap-table-next";
+import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 
 import paginationFactory, {
   PaginationProvider,
@@ -33,33 +30,44 @@ import paginationFactory, {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
+const { SearchBar } = Search;
+
 const tableColumns = [
   {
-    dataField: "name",
+    dataField: "productName",
     text: "Name",
     sort: true,
     formatter: nameFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: "65%", textAlign: "" };
+      return { width: "20%", textAlign: "" };
     },
   },
-  // {
-  //   dataField: "sku",
-  //   text: "SKU",
-  //   sort: true,
-  // },
-  // {
-  //   dataField: "stock_on_hand",
-  //   text: "Stock On Hand",
-  //   sort: true,
-  // },
-  // {
-  //   dataField: "reorder_level",
-  //   text: "Reorder Level",
-  //   sort: true,
-  // },
   {
-    dataField: "is_active",
+    dataField: "productDescription",
+    text: "Description",
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: "30%", textAlign: "" };
+    },
+  },
+  {
+    dataField: "productPrice",
+    text: "Price",
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: "10%", textAlign: "" };
+    },
+  },
+  {
+    dataField: "productQuantity",
+    text: "Quantity",
+    sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: "10%", textAlign: "" };
+    },
+  },
+  {
+    dataField: "isActive",
     text: "Status",
     formatter: statusFormatter,
     sort: true,
@@ -73,23 +81,7 @@ const tableColumns = [
 ];
 
 function nameFormatter(cell, row) {
-  if (row) {
-    if (row.item_details && row.item_details[0].item_option) {
-      // const locations = [
-      //   ...new Set(row.item_details.map((x) => x.organization_location_id)),
-      // ];
-      return (
-        cell +
-        " (" +
-        row.item_details.length +
-        " items in " +
-        row.item_details[0].inventory.length +
-        " locations)"
-      );
-    } else {
-      return cell;
-    }
-  }
+  return cell;
 }
 
 function statusFormatter(cell, row) {
@@ -110,7 +102,7 @@ function actionFormatter(cell, row) {
       <Button
         tag={Link}
         to={{
-          pathname: `/items/edit/${row.id}`,
+          pathname: `/items/edit/${row._id}`,
           state: {
             item: row,
           },
@@ -126,64 +118,44 @@ function actionFormatter(cell, row) {
 
 const ItemsTable = (props) => {
   const tableData = props.items;
-  const options = {
-    custom: true,
-    totalSize: props.total,
-    // sizePerPage: 5,
-    sizePerPageList: [10, 25, 50],
-    onPageChange: (page, sizePerPage) => {
-      props.getAllItems(sizePerPage * page);
-    },
-    onSizePerPageChange: (sizePerPage, page) => {
-      props.getAllItems(sizePerPage, page);
-    },
-  };
-
-  const callbackFunction = (childData) => {
-    props.getSearchValue(childData);
-  };
-
   return (
-    <React.Fragment>
-      {props.totalItems === null ? (
-        <h4>Loading...</h4>
-      ) : (
-        <div>
-          {props.totalItems !== 0 ? (
-            <Card>
-              <PaginationProvider pagination={paginationFactory(options)}>
-                {({ paginationProps, paginationTableProps }) => (
-                  <div>
-                    <BootstrapTable
-                      keyField="id"
-                      responsive={true}
-                      striped
-                      hover
-                      bootstrap4
-                      bordered={false}
-                      data={tableData}
-                      // rowEvents={prop.rowEvents}
-                      columns={tableColumns}
-                      {...paginationTableProps}
-                      noDataIndication="No results"
-                    />
-                    {props.items.length !== 0 ? (
-                      <SizePerPageDropdownStandalone {...paginationProps} />
-                    ) : null}
-
-                    <div className="float-right pull-right">
-                      <PaginationListStandalone {...paginationProps} />
-                    </div>
-                  </div>
-                )}
-              </PaginationProvider>
-            </Card>
-          ) : (
-            <h4>No results found.</h4>
+    <div>
+      <Card>
+        <ToolkitProvider
+          keyField="_id"
+          data={tableData}
+          columns={tableColumns}
+          exportCSV
+          search
+        >
+          {(props) => (
+            <div>
+              <CardHeader>
+                <div className="float-right pull-right">
+                  <SearchBar {...props.searchProps} />
+                </div>
+                <CardTitle tag="h4">Items Listed</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <BootstrapTable
+                  responsive={true}
+                  striped
+                  hover
+                  {...props.baseProps}
+                  bootstrap4
+                  hover={true}
+                  bordered={false}
+                  pagination={paginationFactory({
+                    sizePerPage: 5,
+                    sizePerPageList: [5, 10, 25, 50],
+                  })}
+                />
+              </CardBody>
+            </div>
           )}
-        </div>
-      )}
-    </React.Fragment>
+        </ToolkitProvider>
+      </Card>
+    </div>
   );
 };
 
@@ -197,36 +169,25 @@ class Items extends React.Component {
   };
   componentDidMount() {
     this.getAllItems(10);
-    this.getOrganizationLocations();
   }
 
   getAllItems = (pageSize) => {
     this.setState({
       item_options: [],
     });
-    this.props
-      .items( pageSize)
-      .then((items, id) => {
-        console.log(items)
-        if (items.items && items.items.status === 200) {
-          this.setState({
-            items: items.items.data,
-            total: items.items.data.total,
-            totalItems: items.items.data.length,
-          });
-        }
-      });
-  };
-
-  getOrganizationLocations = () => {
-    this.props.getOrganizationLocations().then((locations) => {
-      if (locations.locations && locations.locations.status === 201) {
+    this.props.items(pageSize).then((items, id) => {
+      console.log(items);
+      if (items.items && items.items.status === 200) {
         this.setState({
-          locations: locations.locations.data.data.length,
+          items: items.items.data,
+          total: items.items.data.length,
+          totalItems: items.items.data.length,
         });
       }
     });
   };
+
+
   render() {
     return (
       <Container fluid className="p-0 container-fluid">
@@ -239,22 +200,7 @@ class Items extends React.Component {
           <FontAwesomeIcon icon={faPlus} /> Add
         </Button>
         <UncontrolledButtonDropdown key={0} className="mr-1 mb-3">
-          <DropdownToggle caret color={"test"}>
-            <span className="h3 mb-3">All Items </span>
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem>All</DropdownItem>
-            <DropdownItem>Draft</DropdownItem>
-            <DropdownItem>Pending Approval</DropdownItem>
-            <DropdownItem>Approved</DropdownItem>
-            <DropdownItem>Partially Received</DropdownItem>
-            <DropdownItem>Unpaid</DropdownItem>
-            <DropdownItem>Overdue</DropdownItem>
-            <DropdownItem>Paid</DropdownItem>
-            <DropdownItem>Void</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem>Advanced Search</DropdownItem>
-          </DropdownMenu>
+        <span className="h3 mb-3">All Items </span>
         </UncontrolledButtonDropdown>
         <ItemsTable
           items={this.state.items}

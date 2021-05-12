@@ -6,6 +6,7 @@ export const itemActions = {
   createNewItem,
   getAllItems,
   getItems,
+  getItem,
   updateItem,
   getItemDetails,
   getItemOptions,
@@ -107,6 +108,27 @@ function getItems(amount) {
   }
   function failure(error) {
     return { type: types.GET_ITEMS_FAILURE, error };
+  }
+}
+
+function getItem(id) {
+  return (dispatch) => {
+    dispatch(request());
+
+    return itemService.getItem(id).then(
+      (item) => dispatch(success(item)),
+      (error) => dispatch(failure(error))
+    );
+  };
+
+  function request() {
+    return { type: types.GET_ITEM_REQUEST };
+  }
+  function success(item) {
+    return { type: types.GET_ITEM_SUCCESS, item };
+  }
+  function failure(error) {
+    return { type: types.GET_ITEM_FAILURE, error };
   }
 }
 

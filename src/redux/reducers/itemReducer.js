@@ -25,6 +25,17 @@ export default function reducer(state = {}, action) {
         error: action.error,
       };
 
+      case types.GET_ITEM_REQUEST:
+        return {
+          loading: true,
+        };
+      case types.GET_ITEM_SUCCESS:
+        return action.item;
+  
+      case types.GET_ITEM_FAILURE:
+        return {
+          error: action.error,
+        };
     case types.GET_ITEM_DETAILS_REQUEST:
       return {
         loading: true,

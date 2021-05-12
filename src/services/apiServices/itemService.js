@@ -3,6 +3,7 @@ export const itemService = {
   createNewItem,
   getAllItems,
   getItems,
+  getItem,
   getItemDetails,
   updateItem,
   getItemOptions,
@@ -30,7 +31,7 @@ function createNewItem(item) {
 function updateItem(item, id) {
   return axios({
     method: "put",
-    url: API_URL + `item/${id}`,
+    url: API_URL + `products/${id}`,
     data: item,
   })
     .then(function (response) {
@@ -70,8 +71,14 @@ function getItemDetails() {
     });
 }
 
-function getItems(amount) {
-  return axios.get(API_URL + `items/${amount}`).then((items) => {
+function getItem(id) {
+  return axios.get(API_URL + `products/${id}`).then((item) => {
+    return item;
+  });
+}
+
+function getItems() {
+  return axios.get(API_URL + `products/`).then((items) => {
     return items;
   });
 }
