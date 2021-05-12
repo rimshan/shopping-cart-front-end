@@ -1439,7 +1439,7 @@ class NewItems extends React.Component {
             toastrMessage: "You have successfully created a item",
           });
           this.showToastr();
-          this.props.history.push("/items/all");
+          this.props.history.push("/items");
         }
       }
     });
