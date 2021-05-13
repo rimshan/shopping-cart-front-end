@@ -187,7 +187,7 @@ class Sidebar extends React.Component {
                     height="40"
                   />
                   <div className="media-body">
-                    <h5 className="mb-1">Chris Wood</h5>
+                    <h5 className="mb-1">{localStorage.getItem("user") && JSON.parse(localStorage.getItem("user")).firstName +" "+ JSON.parse(localStorage.getItem("user")).lastName}</h5>
                     <div>
                       <FontAwesomeIcon
                         icon={faCircle}

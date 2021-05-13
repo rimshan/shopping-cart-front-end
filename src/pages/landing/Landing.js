@@ -492,9 +492,12 @@ class Landing extends React.Component {
     const { items, cart, loading } = this.state;
     return (
       <React.Fragment>
-        <Navigation toggleCart={this.toggleCart} />
+        {items.length > 0 ? <div>
+          <Navigation toggleCart={this.toggleCart} />
         <Features items={items} addToCart={this.addToCart} />
         <Footer />
+        </div> : <h3>Sorry! No products Available</h3>}
+        
 
         <Modal
           isOpen={this.state.orderModel}

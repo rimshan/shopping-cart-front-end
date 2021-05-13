@@ -91,11 +91,7 @@ class SignIn extends React.Component {
 
   handleInvalidSubmit = (event, errors, values) => {
     const newState = { ...this.state };
-    if (
-      errors[0] === "email" &&
-      errors.length === 1 &&
-      values.email !== ""
-    ) {
+    if (errors[0] === "email" && errors.length === 1 && values.email !== "") {
       newState.toastrInstance = "error";
       newState.toastrTitle = "";
       newState.toastrMessage = "Email is not valid";
@@ -137,8 +133,14 @@ class SignIn extends React.Component {
       if (user) {
         if (user.status === 200) {
           this.props.getUser().then((user) => {
-            this.setState({ loading: false });
-            this.props.history.push(from)
+            if (user.user && user.user.status == 200) {
+              if (user.user.data?.role == 1) {
+                this.setState({ loading: false });
+                this.props.history.push(from);
+              } else {
+                this.props.history.push("/");
+              }
+            }
           });
         } else {
           this.setState({ loading: false });
