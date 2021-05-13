@@ -93,31 +93,31 @@ function getUser() {
   // const requestOptions = {
   //   headers: authHeader()
   // };
-  return axios.get(API_URL + `user`).then((user) => {
-    localStorage.setItem(
-      "first_name",
-      JSON.stringify(user.data.data.first_name)
-    );
-    localStorage.setItem("last_name", JSON.stringify(user.data.data.last_name));
-    localStorage.setItem("user_id", JSON.stringify(user.data.data.user_id));
-    localStorage.setItem(
-      "organization_id",
-      JSON.stringify(user.data.data.organization_id)
-    );
-    localStorage.setItem(
-      "organization_name",
-      JSON.stringify(user.data.data.name)
-    );
-    localStorage.setItem(
-      "profile_image_url",
-      JSON.stringify(user.data.data.profile_image_url)
-    );
-    localStorage.setItem("logo_url", JSON.stringify(user.data.data.logo_url));
-    localStorage.setItem(
-      "legal_name_of_business",
-      user.data.data.legal_name_of_business
-    );
-    localStorage.setItem("user", JSON.stringify(user.data.data));
+  return axios.get(API_URL + `users/jwt-test`).then((user) => {
+    // localStorage.setItem(
+    //   "first_name",
+    //   JSON.stringify(user.data.data.first_name)
+    // );
+    // localStorage.setItem("last_name", JSON.stringify(user.data.data.last_name));
+    // localStorage.setItem("user_id", JSON.stringify(user.data.data.user_id));
+    // localStorage.setItem(
+    //   "organization_id",
+    //   JSON.stringify(user.data.data.organization_id)
+    // );
+    // localStorage.setItem(
+    //   "organization_name",
+    //   JSON.stringify(user.data.data.name)
+    // );
+    // localStorage.setItem(
+    //   "profile_image_url",
+    //   JSON.stringify(user.data.data.profile_image_url)
+    // );
+    // localStorage.setItem("logo_url", JSON.stringify(user.data.data.logo_url));
+    // localStorage.setItem(
+    //   "legal_name_of_business",
+    //   user.data.data.legal_name_of_business
+    // );
+    localStorage.setItem("user", JSON.stringify(user.data));
 
     return user;
   });

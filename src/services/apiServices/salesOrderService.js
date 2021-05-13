@@ -40,7 +40,7 @@ function getSalesOrder(id) {
 function create(salesOrder) {
   return axios({
     method: "post",
-    url: API_URL + `salesOrder`,
+    url: API_URL + `orders`,
     data: salesOrder,
   })
     .then(function (response) {
