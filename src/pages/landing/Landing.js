@@ -1,5 +1,5 @@
 import React from "react";
-import { Link,  withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { itemActions } from "../../redux/actions/itemActions";
 import { userActions } from "../../redux/actions/userActions";
@@ -10,7 +10,6 @@ import Select from "react-select";
 import classnames from "classnames";
 
 import unsplash1 from "../../assets/img/photos/unsplash-1.jpg";
-
 
 import {
   Input,
@@ -38,14 +37,9 @@ import {
   Spinner,
 } from "reactstrap";
 
-import {
-  AvForm,
-} from "availity-reactstrap-validation";
+import { AvForm } from "availity-reactstrap-validation";
 import AvField from "availity-reactstrap-validation/lib/AvField";
-import {
-  Box,
-  Trash2,
-} from "react-feather";
+import { Box, Trash2 } from "react-feather";
 import { toastr } from "react-redux-toastr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -54,7 +48,6 @@ import {
   faPlus,
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
-
 
 const options = [
   { value: 1, label: "Cash On Delivery" },
@@ -378,7 +371,7 @@ class Landing extends React.Component {
       user &&
       user !== "undefined"
     ) {
-      user  = JSON.parse(user)
+      user = JSON.parse(user);
       const newState = { ...this.state };
       newState.loading = false;
       newState.cart.firstName = user.firstName;
@@ -406,7 +399,7 @@ class Landing extends React.Component {
           });
           this.showToastr();
           this.resetForm();
-        }else{
+        } else {
           this.setState({
             toastrInstance: "error",
             toastrTitle: "Error",
@@ -418,13 +411,13 @@ class Landing extends React.Component {
     });
   };
 
-  resetForm = () =>{
-    const newState = this.state
+  resetForm = () => {
+    const newState = this.state;
     newState.checkoutModel = false;
-    newState.orderModel = false
-    newState.cart.orderItems = []
-    this.setState(newState)
-  }
+    newState.orderModel = false;
+    newState.cart.orderItems = [];
+    this.setState(newState);
+  };
 
   handleFieldChange = (field, value) => {
     const newState = { ...this.state };
@@ -492,12 +485,15 @@ class Landing extends React.Component {
     const { items, cart, loading } = this.state;
     return (
       <React.Fragment>
-        {items.length > 0 ? <div>
-          <Navigation toggleCart={this.toggleCart} />
-        <Features items={items} addToCart={this.addToCart} />
-        <Footer />
-        </div> : <h3>Sorry! No products Available</h3>}
-        
+        {items.length > 0 ? (
+          <div>
+            <Navigation toggleCart={this.toggleCart} />
+            <Features items={items} addToCart={this.addToCart} />
+            <Footer />
+          </div>
+        ) : (
+          <h3>Sorry! No products Available</h3>
+        )}
 
         <Modal
           isOpen={this.state.orderModel}
@@ -804,11 +800,7 @@ class Landing extends React.Component {
               >
                 Close
               </Button>{" "}
-              <Button
-                type="submit"
-                color="success"
-                
-              >
+              <Button type="submit" color="success">
                 Complete Checkout and Pay
               </Button>
             </ModalFooter>
@@ -825,7 +817,7 @@ const mapStateToProps = (state) => {
 
 const mapActionToProps = {
   items: itemActions.getAllItems,
- creatOrder: salesOrderActions.create,
+  creatOrder: salesOrderActions.create,
   getCustomerOrders: userActions.getuserOrders,
   updtateOrder: salesOrderActions.update,
   getCustomerByID: userActions.getuserByID,

@@ -742,20 +742,20 @@ export default [
   itemsRoute,
   customersRoutes,
   ordersRoutes,
-  examsRoutes,
-  paymentsRoutes,
+  // examsRoutes,
+  // paymentsRoutes,
   settingsRoutes,
  
 
-  pageRoutes,
-  authRoutes,
-  layoutRoutes,
-  documentationRoutes,
-  uiRoutes,
-  chartRoutes,
-  formRoutes,
-  tableRoutes,
-  iconRoutes,
-  calendarRoutes,
-  mapRoutes
+  // pageRoutes,
+  // authRoutes,
+  // layoutRoutes,
+  // documentationRoutes,
+  // uiRoutes,
+  // chartRoutes,
+  // formRoutes,
+  // tableRoutes,
+  // iconRoutes,
+  // calendarRoutes,
+  // mapRoutes
 ];
