@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { authActions } from "../../redux/actions/authActions";
 
 import { Link, withRouter } from "react-router-dom";
+import { GoogleLogin } from 'react-google-login';
 
 import {
   Button,
@@ -28,6 +29,9 @@ import Avatar from "react-avatar";
 
 import avatar from "../../assets/img/avatars/avatar.jpg";
 import AvField from "availity-reactstrap-validation/lib/AvField";
+
+const clientId =
+  '27034210086-um5lrd33ulg207bqv0o40mvptlqno6mv.apps.googleusercontent.com';
 
 class SignIn extends React.Component {
   state = {
@@ -153,8 +157,34 @@ class SignIn extends React.Component {
       }
     });
   };
+
+ 
   render() {
     const { hour, loading } = this.state;
+    
+    const mystyle = {
+      marginTop: "20px"
+    };
+
+    const buttonStyle = {
+      borderColor: "#e7e7e7",
+      shadowColor: 'rgba(0, 0, 0, 0.1)',
+      font: "OriginalFont"
+
+    };
+
+    const onSuccess = () => {
+      console.log('Login made successfully');
+      alert('Login made successfully');
+    };
+
+    const onFailure = (res) => {
+      console.log('Login failed: res:', res);
+      alert(
+        `Failed to login.`
+      );
+    };
+
     return (
       <React.Fragment>
         <div className="text-center mt-4">
@@ -265,6 +295,30 @@ class SignIn extends React.Component {
                       "Login"
                     )}
                   </Button>
+                  <div style={mystyle} >
+                  <GoogleLogin
+                   clientId={clientId}  
+                   render={ renderProps => (
+                    <Button style={buttonStyle}
+                    color="white"
+                    borderColor="#e7e7e7"
+                    disabled={loading ? true : false}
+                    size="lg"
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                   >
+                   <img src="https://raw.githubusercontent.com/Sivanesh-S/react-google-authentication/8d828c5b494f27293ae5c468e5089ac0ccb6aa94/public/icons/google.svg"
+                   height="30px" width="30px" style={{paddingRight: 10}} />
+                     Sign in with Google</Button>
+                  )}                 
+                    buttonText="Sign in with Google"
+                    onSuccess={onSuccess}
+                    onFailure={onFailure}
+                    cookiePolicy={'single_host_origin'}
+                    style={{ marginTop: '100px' }}
+                    isSignedIn={true}
+                  />
+                  </div>
                 </div>
               </AvForm>
             </div>
