@@ -199,10 +199,10 @@ class CustomerTable extends React.Component {
     locations: null,
   };
   componentDidMount() {
-    this.getAllCustomers(10);
+    this.getAllOrders();
   }
 
-  getAllCustomers = () => {
+  getAllOrders = () => {
     this.setState({
       item_options: [],
     });

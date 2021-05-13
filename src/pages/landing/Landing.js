@@ -1,14 +1,31 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { itemActions } from "../../redux/actions/itemActions";
+import { userActions } from "../../redux/actions/userActions";
+import { salesOrderActions } from "../../redux/actions/salesOrderActions";
+import {
+  organizationAction,
+  organizationActions,
+} from "../../redux/actions/organizationAction";
 import { enableClassicTheme } from "../../redux/actions/themeActions";
+
+import classnames from "classnames";
+
+import unsplash1 from "../../assets/img/photos/unsplash-1.jpg";
+import unsplash2 from "../../assets/img/photos/unsplash-2.jpg";
+import unsplash3 from "../../assets/img/photos/unsplash-3.jpg";
 
 import {
   Badge,
   Button,
   Card,
   CardBody,
+  CardHeader,
   CardImg,
+  CardLink,
+  CardText,
+  CardTitle,
   Col,
   Container,
   Nav,
@@ -16,7 +33,12 @@ import {
   NavLink,
   Navbar,
   NavbarBrand,
-  Row
+  Row,
+  Table,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
 } from "reactstrap";
 
 import {
@@ -26,11 +48,22 @@ import {
   Download,
   Mail,
   Sliders,
-  Smartphone
+  Smartphone,
 } from "react-feather";
-
+import { toastr } from "react-redux-toastr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpen, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookOpen,
+  faShoppingCart,
+  faCheck,
+  faExclamation,
+  faGlobeAmericas,
+  faInfo,
+  faTimes,
+  faCartArrowDown,
+  faPlus,
+  faMinus,
+} from "@fortawesome/free-solid-svg-icons";
 
 import screenshotDashboardDefaultLarge from "../../assets/img/screenshots/dashboard-default-large.png";
 import screenshotDashboardAnalyticsLarge from "../../assets/img/screenshots/dashboard-analytics-large.png";
@@ -53,7 +86,7 @@ import brandNpm from "../../assets/img/brands/npm.svg";
 import brandReact from "../../assets/img/brands/react.svg";
 import brandRedux from "../../assets/img/brands/redux.svg";
 
-const Navigation = () => (
+const Navigation = (props) => (
   <Navbar dark expand className="navbar-landing">
     <NavbarBrand href="/">
       <Box title="Space Code" />
@@ -72,467 +105,170 @@ const Navigation = () => (
       </NavItem> */}
       <NavItem className="d-none d-md-inline-block">
         <Button
+          onClick={() => props.toggleCart()}
+          color="info"
+          className="ml-2"
+        >
+          <FontAwesomeIcon icon={faCartArrowDown} />
+        </Button>
+      </NavItem>
+      <NavItem className="d-none d-md-inline-block">
+        <Button
           href="auth/sign-in"
           rel="noopener noreferrer"
           color="warning"
           className="ml-2"
         >
           Sign In
-    </Button>
+        </Button>
       </NavItem>
     </Nav>
-
-    {/* <Button
-      href="https://themes.getbootstrap.com/product/appstack-react-admin-dashboard-template/"
-      target="_blank"
-      rel="noopener noreferrer"
-      color="primary"
-      className="ml-2"
-    >
-      Purchase
-    </Button> */}
   </Navbar>
 );
 
-const Intro = () => (
-  <section className="landing-intro pt-5">
-    <Container>
-      <Row>
-        <Col md="12" lg="9" xl="12" className="mx-auto">
-          <Row>
-            <Col xl="5">
-              <Box title="AppStack" className="landing-intro-brand" />
+// const Dashboards = () => (
+//   <section className="py-6 bg-white">
+//     <Container>
+//       <Row>
+//         <Col md="12" className="mx-auto text-center">
+//           <div className="mb-3">
+//             <h2>Multiple dashboards</h2>
+//             <p className="text-muted">
+//               The package includes 5 unique dashboard pages.
+//             </p>
+//           </div>
 
-              <h1 className="text-white my-4">
-                Start creating the best possible user experience for your
-                customers.
-              </h1>
+//           <Row>
+//             <Col md="6" lg="4" className="py-3">
+//               <Link to="/dashboard/default" target="_blank">
+//                 <Card className="mb-2 shadow-lg cursor-pointer">
+//                   <CardImg
+//                     top
+//                     src={screenshotDashboardDefault}
+//                     alt="Default Dashboard"
+//                   />
+//                 </Card>
+//               </Link>
+//               <h4>Default</h4>
+//             </Col>
+//             <Col md="6" lg="4" className="py-3">
+//               <Link to="/dashboard/analytics" target="_blank">
+//                 <Card className="mb-2 shadow-lg cursor-pointer">
+//                   <CardImg
+//                     top
+//                     src={screenshotDashboardAnalytics}
+//                     alt="Analytics Dashboard"
+//                   />
+//                 </Card>
+//               </Link>
+//               <h4>Analytics</h4>
+//             </Col>
+//             <Col md="6" lg="4" className="py-3">
+//               <Link to="/dashboard/e-commerce" target="_blank">
+//                 <Card className="mb-2 shadow-lg cursor-pointer">
+//                   <CardImg
+//                     top
+//                     src={screenshotDashboardEcommerce}
+//                     alt="E-commerce Dashboard"
+//                   />
+//                 </Card>
+//               </Link>
+//               <h4>E-commerce</h4>
+//             </Col>
+//             <Col md="6" lg="4" className="py-3">
+//               <Link to="/dashboard/social" target="_blank">
+//                 <Card className="mb-2 shadow-lg cursor-pointer">
+//                   <CardImg
+//                     top
+//                     src={screenshotDashboardSocial}
+//                     alt="Social Dashboard"
+//                   />
+//                 </Card>
+//               </Link>
+//               <h4>Social</h4>
+//             </Col>
+//             <Col md="6" lg="4" className="py-3">
+//               <Link to="/dashboard/crypto" target="_blank">
+//                 <Card className="mb-2 shadow-lg cursor-pointer">
+//                   <CardImg
+//                     top
+//                     src={screenshotDashboardCrypto}
+//                     alt="Crypto Dashboard"
+//                   />
+//                 </Card>
+//               </Link>
+//               <h4>
+//                 Crypto{" "}
+//                 <sup>
+//                   <Badge color="primary" tag="small">
+//                     New
+//                   </Badge>
+//                 </sup>
+//               </h4>
+//             </Col>
+//             <Col md="6" lg="4" className="py-3">
+//               <Card className="mb-2 shadow-lg">
+//                 <CardImg top src={screenshotComingSoon} alt="Coming soon" />
+//               </Card>
+//               <h4>More coming soon</h4>
+//             </Col>
+//           </Row>
+//         </Col>
+//       </Row>
+//     </Container>
+//   </section>
+// );
 
-              <p className="text-muted lead">
-                A professional package that comes with plenty of UI components,
-                forms, tables, charts, dashboards, pages and svg icons. Each one
-                is fully customizable, responsive and easy to use.
+const Features = (props) => {
+  console.log(props);
+  return (
+    <section className="py-6">
+      <Container>
+        <Row>
+          <Col md="10" className="mx-auto text-center">
+            <div className="mb-3">
+              <h2>Features</h2>
+              <p className="text-muted">
+                A responsive dashboard built for everyone who wants to create
+                webapps on top of Bootstrap.
               </p>
+            </div>
 
-              <div className="my-4">
-                <Button
-                  tag={Link}
-                  to="/dashboard/default"
-                  color="light"
-                  size="lg"
-                  className="mr-2"
-                  target="_blank"
-                >
-                  Demo
-                </Button>
-                <Button
-                  color="light"
-                  size="lg"
-                  outline
-                  href="https://themes.getbootstrap.com/product/appstack-react-admin-dashboard-template/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Purchase
-                </Button>
-              </div>
-
-              <div className="my-5">
-                <div className="d-inline-block mr-3">
-                  <h2 className="text-white">500+</h2>
-                  <span className="text-muted">UI Components</span>
-                </div>
-                <div className="d-inline-block mr-3">
-                  <h2 className="text-white">1500+</h2>
-                  <span className="text-muted">SVG Icons</span>
-                </div>
-                <div className="d-inline-block">
-                  <h2 className="text-white">45+</h2>
-                  <span className="text-muted">Demo Pages</span>
-                </div>
-              </div>
-
-              <div className="my-5">
-                <img
-                  src={brandBootstrap}
-                  alt="Bootstrap"
-                  width="40"
-                  className="align-middle mr-2"
-                />
-                <img
-                  src={brandSass}
-                  alt="Sass"
-                  width="40"
-                  className="align-middle mr-2"
-                />
-                <img
-                  src={brandWebpack}
-                  alt="Webpack"
-                  width="40"
-                  className="align-middle mr-2"
-                />
-                <img
-                  src={brandNpm}
-                  alt="NPM"
-                  width="40"
-                  className="align-middle mr-2"
-                />
-                <img
-                  src={brandReact}
-                  alt="React"
-                  width="40"
-                  className="align-middle mr-2"
-                />
-                <img
-                  src={brandRedux}
-                  alt="Redux"
-                  width="36"
-                  className="align-middle mr-2"
-                />
-              </div>
-            </Col>
-            <Col xl="6" className="ml-auto d-none d-xl-block">
-              <div className="landing-intro-img">
-                <img
-                  src={screenshotDashboardDefaultLarge}
-                  className="landing-intro-img-default img-fluid"
-                  alt="Dashboard Default"
-                />
-                <img
-                  src={screenshotDashboardAnalyticsLarge}
-                  className="landing-intro-img-analytics img-fluid"
-                  alt="Dashboard Analytics"
-                />
-              </div>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </Container>
-  </section>
-);
-
-const Styles = () => (
-  <section className="py-6">
-    <Container>
-      <Row>
-        <Col md="12" className="mx-auto text-center">
-          <div className="mb-3">
-            <h2>Available styles</h2>
-            <p className="text-muted">
-              Multiple color schemes available to make this template your very
-              own.
-            </p>
-          </div>
-
-          <Row>
-            <Col md="6" lg="4" className="py-3">
-              <Link to="/layouts/theme-classic" target="_blank">
-                <Card className="mb-2 shadow-lg cursor-pointer">
-                  <CardImg
-                    top
-                    src={screenshotThemeClassic}
-                    alt="Classic Theme"
-                  />
-                </Card>
-              </Link>
-              <h4>Classic</h4>
-            </Col>
-
-            <Col md="6" lg="4" className="py-3">
-              <Link to="/layouts/theme-modern" target="_blank">
-                <Card className="mb-2 shadow-lg cursor-pointer">
-                  <CardImg top src={screenshotThemeModern} alt="Modern Theme" />
-                </Card>
-              </Link>
-              <h4>
-                Modern{" "}
-                <sup>
-                  <Badge color="primary" tag="small">
-                    New
-                  </Badge>
-                </sup>
-              </h4>
-            </Col>
-
-            <Col md="6" lg="4" className="py-3">
-              <Link to="/layouts/theme-corporate" target="_blank">
-                <Card className="mb-2 shadow-lg cursor-pointer">
-                  <CardImg
-                    top
-                    src={screenshotThemeCorporate}
-                    alt="Corporate Theme"
-                  />
-                </Card>
-              </Link>
-              <h4>
-                Corporate{" "}
-                <sup>
-                  <Badge color="primary" tag="small">
-                    New
-                  </Badge>
-                </sup>
-              </h4>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </Container>
-  </section>
-);
-
-const Dashboards = () => (
-  <section className="py-6 bg-white">
-    <Container>
-      <Row>
-        <Col md="12" className="mx-auto text-center">
-          <div className="mb-3">
-            <h2>Multiple dashboards</h2>
-            <p className="text-muted">
-              The package includes 5 unique dashboard pages.
-            </p>
-          </div>
-
-          <Row>
-            <Col md="6" lg="4" className="py-3">
-              <Link to="/dashboard/default" target="_blank">
-                <Card className="mb-2 shadow-lg cursor-pointer">
-                  <CardImg
-                    top
-                    src={screenshotDashboardDefault}
-                    alt="Default Dashboard"
-                  />
-                </Card>
-              </Link>
-              <h4>Default</h4>
-            </Col>
-            <Col md="6" lg="4" className="py-3">
-              <Link to="/dashboard/analytics" target="_blank">
-                <Card className="mb-2 shadow-lg cursor-pointer">
-                  <CardImg
-                    top
-                    src={screenshotDashboardAnalytics}
-                    alt="Analytics Dashboard"
-                  />
-                </Card>
-              </Link>
-              <h4>Analytics</h4>
-            </Col>
-            <Col md="6" lg="4" className="py-3">
-              <Link to="/dashboard/e-commerce" target="_blank">
-                <Card className="mb-2 shadow-lg cursor-pointer">
-                  <CardImg
-                    top
-                    src={screenshotDashboardEcommerce}
-                    alt="E-commerce Dashboard"
-                  />
-                </Card>
-              </Link>
-              <h4>E-commerce</h4>
-            </Col>
-            <Col md="6" lg="4" className="py-3">
-              <Link to="/dashboard/social" target="_blank">
-                <Card className="mb-2 shadow-lg cursor-pointer">
-                  <CardImg
-                    top
-                    src={screenshotDashboardSocial}
-                    alt="Social Dashboard"
-                  />
-                </Card>
-              </Link>
-              <h4>Social</h4>
-            </Col>
-            <Col md="6" lg="4" className="py-3">
-              <Link to="/dashboard/crypto" target="_blank">
-                <Card className="mb-2 shadow-lg cursor-pointer">
-                  <CardImg
-                    top
-                    src={screenshotDashboardCrypto}
-                    alt="Crypto Dashboard"
-                  />
-                </Card>
-              </Link>
-              <h4>
-                Crypto{" "}
-                <sup>
-                  <Badge color="primary" tag="small">
-                    New
-                  </Badge>
-                </sup>
-              </h4>
-            </Col>
-            <Col md="6" lg="4" className="py-3">
-              <Card className="mb-2 shadow-lg">
-                <CardImg top src={screenshotComingSoon} alt="Coming soon" />
-              </Card>
-              <h4>More coming soon</h4>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </Container>
-  </section>
-);
-
-const Features = () => (
-  <section className="py-6">
-    <Container>
-      <Row>
-        <Col md="10" className="mx-auto text-center">
-          <div className="mb-3">
-            <h2>Features</h2>
-            <p className="text-muted">
-              A responsive dashboard built for everyone who wants to create
-              webapps on top of Bootstrap.
-            </p>
-          </div>
-
-          <Row>
-            <Col md="6" lg="4">
-              <div className="my-4">
-                <Smartphone className="landing-features-icon" />
-                <h5 className="mt-2 font-weight-bold">Responsive</h5>
-
-                <p className="text-muted">
-                  With mobile, tablet & desktop support it doesn't matter what
-                  device you're using. Our themes are responsive in all
-                  browsers.
-                </p>
-              </div>
-            </Col>
-            <Col md="6" lg="4">
-              <div className="my-4">
-                <Sliders className="landing-features-icon" />
-                <h5 className="mt-2 font-weight-bold">Customizable</h5>
-
-                <p className="text-muted">
-                  You don't need to be an expert to customize our themes. Our
-                  code is very readable and well documented.
-                </p>
-              </div>
-            </Col>
-            <Col md="6" lg="4">
-              <div className="my-4">
-                <Mail className="landing-features-icon" />
-                <h5 className="mt-2 font-weight-bold">Quick support</h5>
-
-                <p className="text-muted">
-                  Our themes are supported by specialists who provide quick and
-                  effective support. Usually an email reply takes &lt;24h.
-                </p>
-              </div>
-            </Col>
-            <Col md="6" lg="4">
-              <div className="my-4">
-                <Chrome className="landing-features-icon" />
-                <h5 className="mt-2 font-weight-bold">Cross browser</h5>
-
-                <p className="text-muted">
-                  Our themes are working perfectly with: Chrome, Firefox,
-                  Safari, Opera and IE 10+. We're working hard to support them.
-                </p>
-              </div>
-            </Col>
-            <Col md="6" lg="4">
-              <div className="my-4">
-                <Code className="landing-features-icon" />
-                <h5 className="mt-2 font-weight-bold">Clean code</h5>
-
-                <p className="text-muted">
-                  We strictly followed Bootstrap's guidelines to make your
-                  integration as easy as possible. All code is handwritten.
-                </p>
-              </div>
-            </Col>
-            <Col md="6" lg="4">
-              <div className="my-4">
-                <Download className="landing-features-icon" />
-                <h5 className="mt-2 font-weight-bold">Free updates</h5>
-
-                <p className="text-muted">
-                  From time to time you'll receive an update containing new
-                  components, improvements and bugfixes.
-                </p>
-              </div>
-            </Col>
-          </Row>
-
-          <Button
-            tag={Link}
-            to="/docs/introduction"
-            target="_blank"
-            color="primary"
-            size="lg"
-          >
-            <span className="align-middle">
-              <FontAwesomeIcon icon={faBookOpen} className="text-white" />{" "}
-            </span>
-            <span className="align-middle">Documentation</span>
-          </Button>
-        </Col>
-      </Row>
-    </Container>
-  </section>
-);
-
-const Testimonials = () => (
-  <section className="py-6 bg-white">
-    <Container>
-      <Row>
-        <Col md="9" className="mx-auto text-center">
-          <div className="mb-4">
-            <h2>Testimonials</h2>
-            <p className="text-muted">
-              What others are saying about AppStack ReactJS.
-            </p>
-          </div>
-
-          <Card className="bg-light border-0 shadow-none">
-            <CardBody>
-              <blockquote className="blockquote mb-0">
-                <p className="mb-2">
-                  Seeing the file structure of the code is enough to know that
-                  this was a properly cared for and loved project. The react
-                  project is easy to understand and modify, and everything is so
-                  properly set up that any new additions I'd make would feel
-                  like a native extension of the theme versus a simple hack. If
-                  you ever need inspiration, the example pages are plentiful and
-                  varied, I definitely feel like this will save me hundredths of
-                  hours I'd otherwise spend on designing (with a subpar
-                  outcome).
-                </p>
-                <footer className="blockquote-footer">
-                  Alejandro at{" "}
-                  <cite title="Bootstrap Themes">Bootstrap Themes</cite>
-                </footer>
-              </blockquote>
-            </CardBody>
-          </Card>
-          <Card className="bg-light border-0 shadow-none">
-            <CardBody>
-              <blockquote className="blockquote mb-0">
-                <p className="mb-2">
-                  We are totally amazed with a simplicity and the design of
-                  AppStack. Nice and clean. Easy to integrate in our React-apps
-                  stack. Probably saved us hundreds of hours of development. We
-                  are an Enterprise customer and absolutely amazed with the
-                  support Bootlab has provided us. Totally recommended to
-                  anyone: private or enterprise business, if you count your
-                  money and really need "noBS" and beautiful solution. AppStack
-                  rocks!
-                </p>
-                <footer className="blockquote-footer">
-                  Nikita at{" "}
-                  <cite title="Bootstrap Themes">Bootstrap Themes</cite>
-                </footer>
-              </blockquote>
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
-  </section>
-);
+            <Row>
+              {props.items?.map((item, index) => (
+                <Col key={index} md="6" lg="4">
+                  <Card>
+                    <CardImg
+                      top
+                      width="100%"
+                      src={unsplash1}
+                      alt="Card image cap"
+                    />
+                    <CardHeader>
+                      <CardTitle tag="h5" className="mb-0">
+                        {item.productName}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <CardText>{item.productDescription}</CardText>
+                      <CardText>LKR {item.productPrice}</CardText>
+                      <Button
+                        onClick={() => props.addToCart(item)}
+                        color="primary"
+                      >
+                        ADD TO CART
+                      </Button>
+                    </CardBody>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </Col>
+        </Row>
+      </Container>
+    </section>
+  );
+};
 
 const Footer = () => (
   <section className="py-5">
@@ -557,24 +293,231 @@ const Footer = () => (
 );
 
 class Landing extends React.Component {
+  state = {
+    subTotal: 0,
+    items: [],
+    item_options: [],
+    total: null,
+    totalCustomers: null,
+    locations: null,
+    cart: {
+      orderItems: [],
+    },
+  };
   componentWillMount() {
     const { dispatch } = this.props;
     dispatch(enableClassicTheme());
   }
 
+  componentDidMount() {
+    this.getAllItems();
+  }
+
+  showToastr = () => {
+    const options = {
+      timeOut: 5000,
+      showCloseButton: true,
+      progressBar: true,
+      position: "top-right",
+    };
+
+    const toastrInstance =
+      this.state.toastrInstance === "error" ? toastr.error : toastr.success;
+
+    toastrInstance(this.state.toastrTitle, this.state.toastrMessage, options);
+  };
+
+  toggleCart = () => {
+    this.setState((state) => ({
+      orderModel: !state.orderModel,
+    }));
+  };
+
+  getAllItems = () => {
+    this.setState({
+      item_options: [],
+    });
+    this.props.items().then((items, id) => {
+      console.log(items);
+      if (items.items && items.items.status === 200) {
+        this.setState({
+          items: items.items.data,
+          total: items.items.data.length,
+          totalitems: items.items.data.length,
+        });
+      }
+    });
+  };
+
+  addToCart = async (item) => {
+    const orderItem = {
+      productId: item._id,
+      productName: item.productName,
+      productPrice: item.productPrice,
+      productQty: 1,
+    };
+    const newState = { ...this.state };
+    newState.cart.orderItems.push(orderItem);
+    newState.toastrInstance = "success";
+    newState.toastrTitle = "Success";
+    newState.toastrMessage = "Item added to cart successfully";
+    this.setState(newState);
+
+    setTimeout(
+      function () {
+        this.showToastr();
+        this.calSubTotal()
+      }.bind(this),
+      100
+    );
+
+    console.log(this.state.cart);
+  };
+
+  IncrementItem = (productID) => {
+    const newState = this.state;
+    let itemIndex = this.state.cart.orderItems.findIndex(function (c) {
+      return c.productId == productID;
+    });
+
+    newState.cart.orderItems[itemIndex].productQty =
+      newState.cart.orderItems[itemIndex].productQty + 1;
+
+    this.setState(newState);
+
+    setTimeout(
+      function () {
+        this.calSubTotal();
+      }.bind(this),
+      100
+    );
+  };
+
+  DecreaseItem = (productID) => {
+    const newState = this.state;
+    let itemIndex = this.state.cart.orderItems.findIndex(function (c) {
+      return c.productId == productID;
+    });
+
+    if (newState.cart.orderItems[itemIndex].productQty > 1) {
+      newState.cart.orderItems[itemIndex].productQty =
+        newState.cart.orderItems[itemIndex].productQty - 1;
+
+      this.setState(newState);
+      setTimeout(
+        function () {
+          this.calSubTotal();
+        }.bind(this),
+        100
+      );
+    }
+  };
+
+  calSubTotal = () => {
+    let sub = 0;
+    this.state.cart.orderItems.map((item, index) => {
+      sub = sub + Number(item.productPrice) * Number(item.productQty);
+    });
+    this.setState({
+      subTotal: sub,
+    });
+  };
+
   render() {
+    const { items, cart, subTotal } = this.state;
     return (
       <React.Fragment>
-        <Navigation />
-        <Intro />
-        <Styles />
-        <Dashboards />
-        <Features />
-        <Testimonials />
+        <Navigation toggleCart={this.toggleCart} />
+        <Features items={items} addToCart={this.addToCart} />
         <Footer />
+
+        <Modal
+          isOpen={this.state.orderModel}
+          toggle={() => this.toggleCart()}
+          centered
+          size="lg"
+        >
+          <ModalHeader toggle={() => this.toggleCart()}>
+            Shopping Cart
+          </ModalHeader>
+          <ModalBody className=" m-3">
+            {cart.orderItems.length == 0 ? (
+              <h2 className="text-center"> You cart is empty! </h2>
+            ) : (
+              <div>
+                {" "}
+                <h3>Cart Items</h3>
+                <Table striped bordered>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Product Name</th>
+                      <th>Product Pirce</th>
+                      <th>Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cart.orderItems?.map((item, index) => {
+                      return (
+                        <tr key={item.productId}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{item.productName}</td>
+                          <td>{item.productPrice}</td>
+                          <td>
+                            <Button
+                              onClick={() => this.DecreaseItem(item.productId)}
+                              color="info"
+                              className="mr-2"
+                              size="sm"
+                            >
+                              <FontAwesomeIcon icon={faMinus} />
+                            </Button>
+                            {item.productQty}{" "}
+                            <Button
+                              onClick={() => this.IncrementItem(item.productId)}
+                              color="info"
+                              className="ml-2"
+                              size="sm"
+                            >
+                              <FontAwesomeIcon icon={faPlus} />
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                   
+                  </tbody>
+                </Table>
+                <span className="h4 text-right">Sub Total: LKR {subTotal.toFixed(2)}</span>
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={() => this.toggleCart()}>
+              Close
+            </Button>{" "}
+            {/* <Button color="primary" onClick={() => this.updtateOrder()}>
+              Save
+            </Button> */}
+          </ModalFooter>
+        </Modal>
       </React.Fragment>
     );
   }
 }
 
-export default connect()(Landing);
+const mapStateToProps = (state) => {
+  return state;
+};
+
+const mapActionToProps = {
+  items: itemActions.getAllItems,
+  // getitems: salesOrderActions.getSalesOrders,
+  getCustomerOrders: userActions.getuserOrders,
+  updtateOrder: salesOrderActions.update,
+  getCustomerByID: userActions.getuserByID,
+  getOrganizationLocations: organizationActions.getOrganizationLocations,
+  dispatch: enableClassicTheme,
+};
+
+export default withRouter(connect(mapStateToProps, mapActionToProps)(Landing));

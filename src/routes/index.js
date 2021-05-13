@@ -747,15 +747,15 @@ export default [
   settingsRoutes,
  
 
-  // pageRoutes,
-  // authRoutes,
-  // layoutRoutes,
-  // documentationRoutes,
-  // uiRoutes,
-  // chartRoutes,
-  // formRoutes,
-  // tableRoutes,
-  // iconRoutes,
-  // calendarRoutes,
-  // mapRoutes
+  pageRoutes,
+  authRoutes,
+  layoutRoutes,
+  documentationRoutes,
+  uiRoutes,
+  chartRoutes,
+  formRoutes,
+  tableRoutes,
+  iconRoutes,
+  calendarRoutes,
+  mapRoutes
 ];
