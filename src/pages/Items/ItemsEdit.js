@@ -293,7 +293,7 @@ const ItemEditForm = (props) => {
 
 
 const ActionPanel = (props) => (
-  <div>
+  <div className="mb-4">
     <Button type="submit" color="primary" className="mr-1 mb-1">
       Save
     </Button>

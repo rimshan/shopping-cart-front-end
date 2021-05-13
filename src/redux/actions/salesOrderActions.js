@@ -44,8 +44,8 @@ function getSalesOrder(id) {
   function request() {
     return { type: types.GET_SALES_ORDER_REQUEST };
   }
-  function success(sales_order) {
-    return { type: types.GET_SALES_ORDER_SUCCESS, sales_order };
+  function success(order) {
+    return { type: types.GET_SALES_ORDER_SUCCESS, order };
   }
   function failure(error) {
     return { type: types.GET_SALES_ORDER_FAILURE, error };
@@ -127,12 +127,12 @@ function getSalesOrdersWithFilters(pageSize, page, filter) {
   }
 }
 
-function getSalesOrders(pageSize, page) {
+function getSalesOrders() {
   return (dispatch) => {
     dispatch(request());
 
-    return salesOrderService.getSalesOrders(pageSize, page).then(
-      (sales_orders) => dispatch(success(sales_orders)),
+    return salesOrderService.getSalesOrders().then(
+      (orders) => dispatch(success(orders)),
       (error) => dispatch(failure(error))
     );
   };
@@ -140,8 +140,8 @@ function getSalesOrders(pageSize, page) {
   function request() {
     return { type: types.GET_SALES_ORDERS_REQUEST };
   }
-  function success(sales_orders) {
-    return { type: types.GET_SALES_ORDERS_SUCCESS, sales_orders };
+  function success(orders) {
+    return { type: types.GET_SALES_ORDERS_SUCCESS, orders };
   }
   function failure(error) {
     return { type: types.GET_SALES_ORDERS_FAILURE, error };

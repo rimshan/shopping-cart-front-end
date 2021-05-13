@@ -9,7 +9,6 @@ export function requestInterceptor() {
   axios.interceptors.request.use(
     config => {
       const token = localStorageService.getAccessToken();
-      console.log(token)
       if (token) {
         config.headers["Authorization"] = "Bearer " + token;
       }

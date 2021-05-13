@@ -1,8 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { itemActions } from "../../redux/actions/itemActions";
+import { userActions } from "../../redux/actions/userActions";
+import {
+  organizationAction,
+  organizationActions,
+} from "../../redux/actions/organizationAction";
 
 import Statistics from "./Statistics";
-import CustomerExams from "./CustomerExams";
+import CustomerOrders from "./CustomerOrders";
 import CustomerDetails from "./CustomerDetails";
 import CustomerPayments from "./CustomerPayments";
 import CustomerTimeline from "./CustomerTimeline";
@@ -45,20 +52,14 @@ const options = [
   { value: "credit_card", label: "Credit card" }
 ];
 
-const exam_time = [
-  { value: "9 AM", label: "9 AM" },
-  { value: "10 AM", label: "10 AM" },
-  { value: "11 AM", label: "11 AM" },
-  { value: "12 PM", label: "12 PM" },
-  { value: "1 PM", label: "1 PM" },
-  { value: "2 PM", label: "2 PM" }
-];
 
 class Customer extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      customerOrders:[],
+      customer:{},
       payment_date: new Date(),
       exam_date: new Date(),
       exam_time: new Date(),
@@ -75,61 +76,34 @@ class Customer extends React.Component {
     }));
   }
 
+  componentDidMount() {
+    this.getCustomer()
+  }
+
+
+
+  getCustomer = () => {
+    this.props.getCustomerByID(this.props.location.state.row._id).then((customer, id) => {
+      if (customer.customer && customer.customer.status === 200) {  
+        this.setState({
+          customer: customer.customer.data,
+        });
+      }
+    });
+  };
+
   togglePayment = () => {
     this.setState(state => ({
       paymentModel: !state.paymentModel
     }));
   };
 
-  toggleExam = () => {
-    this.setState(state => ({
-      examModel: !state.examModel
-    }));
-  };
 
-  toggleTrial = () => {
-    this.setState(state => ({
-      trialModel: !state.trialModel
-    }));
-  };
-
-  setTrialDate = date => {
-    this.setState({
-      trial_date: date
-    });
-  };
-
-  setTrialTime = date => {
-    this.setState({
-      trial_time: date
-    });
-  };
-  setExamTime = date => {
-    this.setState({
-      trial_time: date
-    });
-  };
-
-  setExamDate = date => {
-    this.setState({
-      exam_date: date
-    });
-  };
-
-  setExamTime = date => {
-    this.setState({
-      exam_time: date
-    });
-  };
-
-  setPaymentDate = date => {
-    this.setState({
-      payment_date: date
-    });
-  };
 
   render() {
-    const customer = this.props.location.state.row;
+
+    const { customer} = this.state;
+
 
     return (
       <Container fluid className="p-0">
@@ -142,7 +116,7 @@ class Customer extends React.Component {
           </Breadcrumb>
         </div>
         <div className=" float-right pull-right ">
-          <Button
+          {/* <Button
             tag={Link}
             to="/add-customer"
             className="mr-3 "
@@ -150,15 +124,12 @@ class Customer extends React.Component {
             color="primary"
           >
             Edit Customer
-          </Button>
-          <UncontrolledButtonDropdown>
+          </Button> */}
+          {/* <UncontrolledButtonDropdown>
             <DropdownToggle caret color="primary">
               Add{" "}
             </DropdownToggle>
             <DropdownMenu>
-              {/* <DropdownItem>
-                <MyExportCSV {...props.csvProps} />
-              </DropdownItem> */}
               <DropdownItem onClick={() => this.togglePayment()}>
                 Payment
               </DropdownItem>
@@ -169,7 +140,7 @@ class Customer extends React.Component {
                 Exam
               </DropdownItem>
             </DropdownMenu>
-          </UncontrolledButtonDropdown>
+          </UncontrolledButtonDropdown> */}
           <Modal
             isOpen={this.state.paymentModel}
             toggle={() => this.togglePayment()}
@@ -239,125 +210,7 @@ class Customer extends React.Component {
               </Button>
             </ModalFooter>
           </Modal>
-          <Modal
-            isOpen={this.state.examModel}
-            toggle={() => this.toggleExam()}
-            centered
-            size="md"
-          >
-            <ModalHeader toggle={() => this.toggleExam()}>Add Exam</ModalHeader>
-            <ModalBody className="text-center m-3">
-              <FormGroup row>
-                <Label sm={3} className="text-sm-right">
-                  Exam Type
-                </Label>
-                <Col sm={8}>
-                  <Select
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                    options={options}
-                    isSearchable
-                    isClearable
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3} className="text-sm-right">
-                  Exam Date
-                </Label>
-                <Col sm={8}>
-                  <DatePickerInput
-                    value={this.state.exam_date}
-                    onChange={this.setExamDate}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3} className="text-sm-right">
-                  Exam Time
-                </Label>
-                <Col sm={8}>
-                  <Select
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                    options={exam_time}
-                    placeholder="Select Exam Time"
-                    isSearchable
-                    isClearable
-                  />
-                </Col>
-              </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="secondary" onClick={() => this.toggleExam()}>
-                Close
-              </Button>{" "}
-              <Button color="primary" onClick={() => this.toggleExam()}>
-                Add Exam
-              </Button>
-            </ModalFooter>
-          </Modal>
 
-          <Modal
-            isOpen={this.state.trialModel}
-            toggle={() => this.toggleTrial()}
-            centered
-            size="md"
-          >
-            <ModalHeader toggle={() => this.toggleTrial()}>
-              Add Trial
-            </ModalHeader>
-            <ModalBody className="text-center m-3">
-              <FormGroup row>
-                <Label sm={3} className="text-sm-right">
-                  Trial Type
-                </Label>
-                <Col sm={8}>
-                  <Select
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                    options={options}
-                    isSearchable
-                    isClearable
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3} className="text-sm-right">
-                  Trial Date
-                </Label>
-                <Col sm={8}>
-                  <DatePickerInput
-                    value={this.state.trial_date}
-                    onChange={this.setTrialDate}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Label sm={3} className="text-sm-right">
-                  Trial Time
-                </Label>
-                <Col sm={8}>
-                  <Select
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                    options={exam_time}
-                    placeholder="Select Exam Time"
-                    isSearchable
-                    isClearable
-                  />
-                </Col>
-              </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="secondary" onClick={() => this.toggleTrial()}>
-                Close
-              </Button>{" "}
-              <Button color="primary" onClick={() => this.toggleTrial()}>
-                Add Trials
-              </Button>
-            </ModalFooter>
-          </Modal>
         </div>
 
         <Row>
@@ -375,7 +228,7 @@ class Customer extends React.Component {
           </Col>
 
           <Col>
-            <h3>{customer.name}</h3>
+            <h3>{customer.firstName} {customer.lastName}</h3>
 
             <h5>
               {customer.status === "Blocked" ? (
@@ -392,12 +245,9 @@ class Customer extends React.Component {
               )}
 
               <span className="badge badge-primary ml-2 mr-2 mb-1">
-                H | 19 | 190
+                {customer.contactNumber}
               </span>
 
-              <span className="badge badge-primary ml-2 mr-2 mb-1">
-                Head Office
-              </span>
             </h5>
           </Col>
         </Row>
@@ -405,8 +255,8 @@ class Customer extends React.Component {
 
         <Row>
           <Col lg="8">
-            <CustomerExams />
-            <CustomerPayments />
+            <CustomerOrders />
+            {/* <CustomerPayments /> */}
             {/* <CustomerTrails /> */}
           </Col>
           <Col lg="4">
@@ -419,4 +269,16 @@ class Customer extends React.Component {
   }
 }
 
-export default Customer;
+const mapStateToProps = (state) => {
+  return state;
+};
+
+const mapActionToProps = {
+  items: itemActions.getAllItems,
+  getCustomerOrders: userActions.getuserOrders,
+  getCustomerByID: userActions.getuserByID,
+  getOrganizationLocations: organizationActions.getOrganizationLocations,
+};
+
+export default withRouter(connect(mapStateToProps, mapActionToProps)(Customer));
+

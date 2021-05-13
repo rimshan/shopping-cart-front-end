@@ -2,7 +2,7 @@ import React from "react";
 import { Link, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { itemActions } from "../../redux/actions/itemActions";
-import { userActions } from "../../redux/actions/userActions";
+import { salesOrderActions } from "../../redux/actions/salesOrderActions";
 import {
   organizationAction,
   organizationActions,
@@ -48,7 +48,7 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Edit2, Trash, Eye } from "react-feather";
+import { Edit2, Trash } from "react-feather";
 
 import avatar1 from "../../assets/img/avatars/avatar.jpg";
 import avatar2 from "../../assets/img/avatars/avatar-2.jpg";
@@ -66,17 +66,17 @@ const { SearchBar } = Search;
 
 const tableColumns = [
   {
-    dataField: "firstname",
+    dataField: "customerFirstName",
     text: "Name",
     sort: true,
     formatter: nameFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: "25%", textAlign: "left" };
+      return { width: "20%", textAlign: "left" };
     },
   },
 
   {
-    dataField: "email",
+    dataField: "customerEmail",
     text: "Email",
     sort: true,
     headerStyle: (colum, colIndex) => {
@@ -84,7 +84,7 @@ const tableColumns = [
     },
   },
   {
-    dataField: "userAddress",
+    dataField: "customerAddress",
     text: "Address",
     sort: true,
     headerStyle: (colum, colIndex) => {
@@ -95,13 +95,13 @@ const tableColumns = [
   {
     dataField: "contactNumber",
     text: "Mobile No",
-    headerStyle: (colum, colIndex) => {
-      return { width: "15%", textAlign: "left" };
-    },
     sort: false,
+    headerStyle: (colum, colIndex) => {
+      return { width: "12%", textAlign: "left" };
+    },
   },
   {
-    dataField: "status",
+    dataField: "orderStatus",
     text: "Status",
     sort: false,
     formatter: statusFormatter,
@@ -120,35 +120,44 @@ function actionFormatter(cell, row, rowIndex, formatExtraData) {
       <Button
         tag={Link}
         to={{
-          pathname: `/customer-view/${row._id}`,
+          pathname: `/orders/edit/${row._id}`,
           state: {
-            row: row,
+            order: row,
           },
         }}
         color="outline"
         className="mt-n1"
       >
-        <Eye className="align-middle ml-1" size={18} />
+        <Edit2 className="align-middle ml-1" size={18} />
       </Button>
     );
   }
 }
 
 function statusFormatter(cell, row) {
-  if (cell === "Blocked") {
-    return (
-      <div>
-        <span id="UncontrolledTooltip" className="badge badge-danger ">
-          Blocked <FontAwesomeIcon icon={faExclamation} />
+  return (
+    <div>
+      {cell == 1 ? (
+        <span id="UncontrolledTooltip" className="badge badge-warning ">
+          Pending
         </span>
-        <UncontrolledTooltip placement="bottom" target="UncontrolledTooltip">
-          Tooltip on
-        </UncontrolledTooltip>
-      </div>
-    );
-  } else {
-    return <span className="badge badge-success ">Completed</span>;
-  }
+      ) : cell == 2 ? (
+        <span id="UncontrolledTooltip" className="badge badge-primary ">
+          Approved
+        </span>
+      ) : cell == 3 ? (
+        <span id="UncontrolledTooltip" className="badge badge-secondary ">
+          Arriving
+        </span>
+      ) : cell == 4 ? (
+        <span id="UncontrolledTooltip" className="badge badge-success ">
+          Completed
+        </span>
+      ) : (
+        ""
+      )}
+    </div>
+  );
 }
 
 function nameFormatter(cell, row, rowIndex, formatExtraData) {
@@ -161,7 +170,7 @@ function nameFormatter(cell, row, rowIndex, formatExtraData) {
         className="rounded-circle mr-2"
         alt="Avatar"
       />
-      {row.lastName ? row.firstName + " " + row.lastName : row.firstName}
+      {row.customerLastName ? row.customerFirstName + " " + row.customerLastName : row.customerFirstName}
     </div>
   );
 }
@@ -183,7 +192,7 @@ const MyExportCSV = (props) => {
 
 class CustomerTable extends React.Component {
   state = {
-    customers: [],
+    orders: [],
     item_options: [],
     total: null,
     totalCustomers: null,
@@ -197,13 +206,13 @@ class CustomerTable extends React.Component {
     this.setState({
       item_options: [],
     });
-    this.props.getCustomers().then((customers, id) => {
-      console.log(customers);
-      if (customers.customers && customers.customers.status === 200) {
+    this.props.getOrders().then((orders, id) => {
+      console.log(orders);
+      if (orders.orders && orders.orders.status === 200) {
         this.setState({
-          customers: customers.customers.data,
-          total: customers.customers.data.length,
-          totalCustomers: customers.customers.data.length,
+          orders: orders.orders.data,
+          total: orders.orders.data.length,
+          totalOrders: orders.orders.data.length,
         });
       }
     });
@@ -220,7 +229,7 @@ class CustomerTable extends React.Component {
       <Card>
         <ToolkitProvider
           keyField="_id"
-          data={this.state.customers}
+          data={this.state.orders}
           columns={tableColumns}
           exportCSV
           search
@@ -234,11 +243,9 @@ class CustomerTable extends React.Component {
                 <div className="float-right pull-right">
                   <SearchBar {...props.searchProps} />
                 </div>
-                <CardTitle tag="h4">{this.state.customers.length} Listed Customers</CardTitle>
+                <CardTitle tag="h4">{this.state.orders.length} Listed Orders</CardTitle>
               </CardHeader>
               <CardBody>
-
-
                 <BootstrapTable
                   responsive={true}
                   striped
@@ -247,7 +254,7 @@ class CustomerTable extends React.Component {
                   bootstrap4
                   hover={true}
                   bordered={false}
-               
+            
                   pagination={paginationFactory({
                     sizePerPage: 5,
                     sizePerPageList: [5, 10, 25, 50],
@@ -268,7 +275,7 @@ const mapStateToProps = (state) => {
 
 const mapActionToProps = {
   items: itemActions.getAllItems,
-  getCustomers: userActions.getusers,
+  getOrders: salesOrderActions.getSalesOrders,
   getOrganizationLocations: organizationActions.getOrganizationLocations,
 };
 

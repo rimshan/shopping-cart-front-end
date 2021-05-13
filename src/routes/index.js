@@ -81,6 +81,8 @@ import Inventory from "../pages/Items/Inventory";
 import NewTransfer from "../pages/Items/NewTransfer";
 import TransferView from "../pages/Items/TransferView";
 
+//import OrderEdit from "../pages/Orders/OrderEdit";
+
 // Customers
 const Customers = async(() => import("../pages/customers/Customer"));
 const AddCustomers = async(() => import("../pages/customers/AddCustomer"));
@@ -91,8 +93,10 @@ const Exams = async(() => import("../pages/exams/Exams"));
 // const AddCustomers = async(() => import("../pages/customers/AddCustomer"));
 // const ViewCustomers = async(() => import("../pages/customers/CustomerView"));
 
-// trials
-const Trials = async(() => import("../pages/trials/Trials"));
+// orders
+const Orders = async(() => import("../pages/orders/Orders"));
+const OrderEdit = async(() => import("../pages/orders/OrderEdit"));
+
 
 // payments
 const Payments = async(() => import("../pages/payments/Payments"));
@@ -168,7 +172,7 @@ const addCustomerRoutes = {
 };
 
 const customerViewRoutes = {
-  path: "/customer-view",
+  path: "/customer-view/:id",
   name: "Customer View",
   component: ViewCustomers,
   children: null
@@ -184,14 +188,22 @@ const examsRoutes = {
   children: null
 };
 
-const trialsRoutes = {
-  path: "/trials",
-  name: "Trials",
+const ordersRoutes = {
+  path: "/orders",
+  name: "Orders",
   icon: CalendarIcon,
-  component: Trials,
+  component: Orders,
   // badgeColor: "primary",
   // badgeText: "New",
   children: null
+};
+
+const OrdersEditRoute = {
+  path: "/orders/edit/:id",
+  name: "Transfer View",
+  icon: MonitorIcon,
+  component: OrderEdit,
+  children: null,
 };
 
 const paymentsRoutes = {
@@ -357,6 +369,8 @@ const itemsEditRoute = {
   component: ItemsEdit,
   children: null,
 };
+
+
 
 const newInventoryAdjustmentsRoute = {
   path: "/items/inventory-adjustments/new",
@@ -692,7 +706,7 @@ export const dashboard = [
   customerViewRoutes,
   customersRoutes,
   examsRoutes,
-  trialsRoutes,
+  ordersRoutes,
   paymentsRoutes,
   settingsRoutes,
   pageRoutes,
@@ -709,6 +723,7 @@ export const dashboard = [
   itemsRoute,
   itemsEditRoute,
   newItemsRoute,
+  OrdersEditRoute,
   newInventoryAdjustmentsRoute,
   newTransferRoute,
   transferViewRoute,
@@ -724,12 +739,13 @@ export const page = [authRoutes];
 // All routes
 export default [
   dashboardRoutes,
+  itemsRoute,
   customersRoutes,
+  ordersRoutes,
   examsRoutes,
-  trialsRoutes,
   paymentsRoutes,
   settingsRoutes,
-  itemsRoute,
+ 
 
   // pageRoutes,
   // authRoutes,

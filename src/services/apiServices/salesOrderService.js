@@ -27,7 +27,7 @@ function getSalesOrderCount() {
 function getSalesOrder(id) {
   return axios({
     method: "get",
-    url: API_URL + `salesOrder/${id}`,
+    url: API_URL + `orders/${id}`,
   })
     .then(function (response) {
       return response;
@@ -54,7 +54,7 @@ function create(salesOrder) {
 function updateSalesOrder(salesOrder, id) {
   return axios({
     method: "put",
-    url: API_URL + `salesOrder/${id}`,
+    url: API_URL + `orders/${id}`,
     data: salesOrder,
   })
     .then(function (response) {
@@ -83,14 +83,11 @@ function getSalesOrdersWithFilters(pageSize, page, filter) {
     });
 }
 
-function getSalesOrders(pageSize, page) {
+function getSalesOrders() {
   return axios({
     method: "get",
-    url: API_URL + `salesOrders`,
-    params: {
-      pageSize: pageSize,
-      page: page,
-    },
+    url: API_URL + `orders/`,
+
   })
     .then(function (response) {
       return response;

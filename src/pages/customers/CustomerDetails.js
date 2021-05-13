@@ -23,23 +23,19 @@ class BasicTable extends React.Component {
           <tbody>
             <tr>
               <th>Name</th>
-              <td>{customer.name}</td>
-            </tr>
-            <tr>
-              <th>NIC</th>
-              <td>{customer.nic}</td>
+              <td>{customer.firstName} {customer.lastName && customer.lastName}</td>
             </tr>
             <tr>
               <th>Email</th>
               <td>{customer.email}</td>
             </tr>
             <tr>
-              <th>Phone Number</th>
-              <td>{customer.phone_number}</td>
+              <th>Number</th>
+              <td>{customer.contactNumber}</td>
             </tr>
             <tr>
-              <th>Home Number</th>
-              <td>{customer.phone_number}</td>
+              <th>Address</th>
+              <td>{customer.userAddress}</td>
             </tr>
           </tbody>
         </Table>
