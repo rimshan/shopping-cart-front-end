@@ -279,14 +279,6 @@ class AccountSettings extends React.Component {
           console.log(User)
           const newState = { ...this.state };
           newState.values = User
-          // newState.organizaton_id = user.organizaton_id;
-          // newState.values["first_name"] = User.first_name;
-          // newState.values["last_name"] = User.last_name;
-          // newState.values["email"] = User.email;
-          // newState.values["nic"] = User.nic;
-          // newState.values["date_of_birth"] = User.date_of_birth;
-          // newState.values["contact_number"] = User.contact_number;
-          // newState.values["profile_image_url"] = User.profile_image_url;
           this.setState(newState);
         }
       }
@@ -355,7 +347,6 @@ class AccountSettings extends React.Component {
           uploading={uploading}
           isDisabled={isDisabled}
         />
-        {/* <Security toggle={this.toggle} state={this.state} /> */}
       </Container>
     );
   }

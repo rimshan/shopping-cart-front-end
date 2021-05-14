@@ -436,7 +436,6 @@ class NewItems extends React.Component {
   handleFieldChange = (field, value) => {
     const newState = { ...this.state };
     newState.values[field] = value;
-
     this.setState(newState);
   };
 
@@ -489,7 +488,6 @@ class NewItems extends React.Component {
         bodyFormData.append("productQuantity", values.productQuantity);
         bodyFormData.append("productManufacturer", values.productManufacturer);
         bodyFormData.append("file", values.attachments[0]);
-
         this.props.createNewItem(bodyFormData).then((item) => {
           if (item) {
             if (item.status === 200) {

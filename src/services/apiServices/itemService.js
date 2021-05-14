@@ -16,8 +16,6 @@ export const itemService = {
 const API_URL = process.env.REACT_APP_API_URL;
 
 function createNewItem(item) {
-
-
   return axios({
     method: "post",
     url: API_URL + `products/`,

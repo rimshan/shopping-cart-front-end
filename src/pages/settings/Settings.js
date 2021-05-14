@@ -4,6 +4,7 @@ import CompanySettings from "./CompanySettings";
 import BrandSettings from "./BrandSettings";
 import CategoriesSettings from "./CategoriesSettings";
 import ManufacturerSettings from "./ManufacturerSettings";
+import ProductTypeSettings from "./ProductTypeSettings";
 import {
   Card,
   Col,
@@ -61,6 +62,15 @@ const Navigation = props => (
       >
         Brands
       </ListGroupItem>
+      <ListGroupItem
+        tag="a"
+        href="#"
+        active={props.state.view === "type" ? true : false}
+        action
+        onClick={() => props.onNavigationClick("type")}
+      >
+        Product Type
+      </ListGroupItem>
     </ListGroup>
   </Card>
 );
@@ -96,6 +106,7 @@ class Settings extends React.Component {
             {this.state.view === "categories" && <CategoriesSettings />}
             {this.state.view === "manufacturer" && <ManufacturerSettings />}
             {this.state.view === "brand" && <BrandSettings />}
+            {this.state.view === "type" && <ProductTypeSettings />}
           </Col>
         </Row>
       </Container>
