@@ -8,11 +8,11 @@ export const userActions = {
   getuserByID
 };
 
-function updateUser(user) {
+function updateUser(user, id) {
   return dispatch => {
     dispatch(request());
 
-    return userService.updateUser(user).then(
+    return userService.updateUser(user, id).then(
       user => dispatch(success(user)),
       error => dispatch(failure(error))
     );

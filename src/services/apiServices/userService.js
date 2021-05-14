@@ -8,10 +8,10 @@ export const userService = {
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-function updateUser(user) {
+function updateUser(user, id) {
   return axios({
     method: "put",
-    url: API_URL + `user`,
+    url: API_URL + `users/${id}`,
     data: user
   })
     .then(function(response) {

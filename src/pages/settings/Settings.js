@@ -25,7 +25,7 @@ const Navigation = props => (
       >
         Account
       </ListGroupItem>
-      <ListGroupItem
+      {/* <ListGroupItem
         tag="a"
         href="#"
         action
@@ -33,7 +33,7 @@ const Navigation = props => (
         onClick={() => props.onNavigationClick("company")}
       >
         Company
-      </ListGroupItem>
+      </ListGroupItem> */}
       <ListGroupItem
         tag="a"
         href="#"

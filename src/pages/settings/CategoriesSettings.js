@@ -84,7 +84,7 @@ const UsersStaff = (prop) => (
   </Card>
 );
 
-class VehicleSettings extends React.Component {
+class CategorySettings extends React.Component {
   state = {
     toastrInstance: "",
     toastrTitle: "",
@@ -485,5 +485,5 @@ const mapActionToProps = {
   deleteCategory : categoryActions.deleteCategory
 };
 
-export default withRouter(connect(mapStateToProps, mapActionToProps)(VehicleSettings));
+export default withRouter(connect(mapStateToProps, mapActionToProps)(CategorySettings));
 
