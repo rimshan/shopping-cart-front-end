@@ -13,6 +13,7 @@ export const itemActions = {
   getItemValues,
   createItemOption,
   createItemVariantValues,
+  deleteItem
 };
 
 function createNewItem(item) {
@@ -68,6 +69,34 @@ function updateItem(item, id) {
     return { type: types.UPDATE_ITEM_FAILURE, error };
   }
 }
+
+function deleteItem( id) {
+  return (dispatch) => {
+    dispatch(request( ));
+
+    return itemService.deleteItem( id).then(
+      (item) => {
+        dispatch(success(item));
+        return item;
+      },
+      (error) => {
+        dispatch(failure(error));
+        dispatch(alertActions.error(error));
+      }
+    );
+  };
+
+  function request(item) {
+    return { type: types.DELETE_ITEM_REQUEST, item };
+  }
+  function success(item) {
+    return { type: types.DELETE_ITEM_SUCCESS, item };
+  }
+  function failure(error) {
+    return { type: types.DELETE_ITEM_FAILURE, error };
+  }
+}
+
 
 function getAllItems(organization_id, pageSize) {
   return (dispatch) => {
