@@ -8,6 +8,7 @@ import { authActions } from "../../redux/actions/authActions";
 import { enableClassicTheme } from "../../redux/actions/themeActions";
 import Select from "react-select";
 import classnames from "classnames";
+import { PayPalButton } from "react-paypal-button-v2";
 
 import unsplash1 from "../../assets/img/photos/unsplash-1.jpg";
 
@@ -62,24 +63,41 @@ const Navigation = (props) => (
     </NavbarBrand>
     <Nav className="ml-auto" navbar>
       <NavItem className="d-none d-md-inline-block">
-        <Button
-          onClick={() => props.toggleCart()}
-          color="info"
-          className="ml-2"
-        >
-          <FontAwesomeIcon icon={faCartArrowDown} />
-        </Button>
+        <div className="position-relative">
+          <Button
+            onClick={() => props.toggleCart()}
+            color="info"
+            className="ml-2"
+          >
+            <FontAwesomeIcon icon={faCartArrowDown} />
+          </Button>
+          <span className="indicator">{props.cart?.orderItems?.length}</span>
+        </div>
       </NavItem>
       <NavItem className="d-none d-md-inline-block">
         <Button
           href="auth/sign-in"
           rel="noopener noreferrer"
           color="warning"
-          className="ml-2"
+          className="ml-4"
         >
           Sign In
         </Button>
       </NavItem>
+      {props.user &&
+        JSON.parse(props.user).role == 2 &&
+        localStorage.getItem("access_token") && (
+          <NavItem className="d-none d-md-inline-block">
+            <Button
+              onClick={() => props.signOut()}
+              rel="noopener noreferrer"
+              color="secondary"
+              className="ml-4"
+            >
+              Sign Out
+            </Button>
+          </NavItem>
+        )}
     </Nav>
   </Navbar>
 );
@@ -91,11 +109,10 @@ const Features = (props) => {
         <Row>
           <Col md="10" className="mx-auto text-center">
             <div className="mb-3">
-              <h2>Features</h2>
-              <p className="text-muted">
-                A responsive dashboard built for everyone who wants to create
-                webapps on top of Bootstrap.
-              </p>
+              <h2>
+                {props.user && "Welcome " + JSON.parse(props.user).lastName}
+              </h2>
+              <p className="text-muted">Just Landed: Stay Safe</p>
             </div>
 
             <Row>
@@ -103,10 +120,14 @@ const Features = (props) => {
                 <Col key={index} md="6" lg="4">
                   <Card>
                     <CardImg
+                    style={{ height:"200px"}}
                       top
                       width="100%"
-                      src={unsplash1}
-                      alt="Card image cap"
+                      height="100px"
+                      src={
+                        "http://localhost:3000/uploads/" + item.productImageUrl
+                      }
+                      alt="Card image"
                     />
                     <CardHeader>
                       <CardTitle tag="h5" className="mb-0">
@@ -179,6 +200,7 @@ class Landing extends React.Component {
       email: "",
       password: "",
     },
+    user: localStorage.getItem("user"),
   };
   componentWillMount() {
     const { dispatch } = this.props;
@@ -188,6 +210,12 @@ class Landing extends React.Component {
   componentDidMount() {
     this.getAllItems();
   }
+
+  signOut = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+    this.props.history.push("/auth/sign-in");
+  };
 
   showToastr = () => {
     const options = {
@@ -482,17 +510,24 @@ class Landing extends React.Component {
   };
 
   render() {
-    const { items, cart, loading } = this.state;
+    const { items, cart, loading, user } = this.state;
     return (
       <React.Fragment>
+        <Navigation
+          signOut={this.signOut}
+          user={user}
+          cart={cart}
+          toggleCart={this.toggleCart}
+        />
         {items.length > 0 ? (
           <div>
-            <Navigation toggleCart={this.toggleCart} />
-            <Features items={items} addToCart={this.addToCart} />
-            <Footer />
+            <Features user={user} items={items} addToCart={this.addToCart} />
+            {/* <Footer /> */}
           </div>
         ) : (
-          <h3>Sorry! No products Available</h3>
+          <span className="text-center  m-5 h1">
+            Sorry! No products Available...
+          </span>
         )}
 
         <Modal
@@ -791,6 +826,26 @@ class Landing extends React.Component {
               <span className="h4 text-right">
                 Sub Total: LKR {cart.orderTotal.toFixed(2)}
               </span>
+
+              {cart.orderPaymentMethod == "Paypal" && (
+                <div>
+                  <Col md="6" className="mt-4 mx-auto text-center">
+                    <PayPalButton
+                      amount="0.01"
+                      // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                      onSuccess={(details) => {
+                        alert(
+                          "Transaction completed by " +
+                            details.payer.name.given_name
+                        );
+
+                        // OPTIONAL: Call your server to save the transaction
+                        this.completeCheckout();
+                      }}
+                    />
+                  </Col>
+                </div>
+              )}
             </ModalBody>
             <ModalFooter>
               <Button
@@ -800,9 +855,11 @@ class Landing extends React.Component {
               >
                 Close
               </Button>{" "}
-              <Button type="submit" color="success">
-                Complete Checkout and Pay
-              </Button>
+              {cart.orderPaymentMethod == "Cash On Delivery" && (
+                <Button type="submit" color="success">
+                  Complete Checkout and Pay
+                </Button>
+              )}
             </ModalFooter>
           </AvForm>
         </Modal>

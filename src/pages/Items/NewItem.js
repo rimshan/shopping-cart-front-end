@@ -118,7 +118,7 @@ const HorizontalForm = (props) => {
             <Label sm={2} className="text-sm-right"></Label>
             <Col sm={6}>
               <FilePond
-                allowMultiple={true}
+                allowMultiple={false}
                 imagePreviewMaxHeight="200"
                 onremovefile={(error, file) =>
                   props.handleItemAttachmentsRemove(file)
@@ -311,6 +311,7 @@ const ActionPanel = (props) => (
     <Button
       color="primary"
       className="mr-1 mb-1"
+      disabled={props.submitting}
       outline
       onClick={() => props.props.history.push("/items")}
     >
@@ -352,13 +353,16 @@ class NewItems extends React.Component {
     locations: [],
     item_option: [],
     item_options: [],
-    values: {},
+    values: {
+      attachments: []
+    },
     touched: {
       type: false,
       category: false,
       manufacturer: false,
       brand: false
     },
+    submitting: false
   };
 
   showToastr = () => {
@@ -465,7 +469,7 @@ class NewItems extends React.Component {
   handleManufacturerChange = (newValue) => {
     if (newValue !== null && newValue.__isNew__) {
       const newState = { ...this.state };
-      newState.values.productManufacturer = newValue.value;
+      newState.values.productManufacturer = newValue;
       this.setState(newState);
     } else if (newValue !== null) {
       const newState = { ...this.state };
@@ -482,7 +486,7 @@ class NewItems extends React.Component {
   handleBrandChange = (newValue) => {
     if (newValue !== null && newValue.__isNew__) {
       const newState = { ...this.state };
-      newState.values.productBrand = newValue.value;
+      newState.values.productBrand = newValue;
       this.setState(newState);
     } else if (newValue !== null) {
       const newState = { ...this.state };
@@ -515,39 +519,22 @@ class NewItems extends React.Component {
   };
 
   handleItemAttachments = async (fileItem) => {
-    S3FileUpload.uploadFile(fileItem.file, config)
-      .then((data) => {
-        let attachment = {};
-        if (this.state.values.attachments.length === 0) {
-          attachment = {
-            attachment_link: data.location,
-            is_primary: true,
-          };
-        } else {
-          attachment = {
-            attachment_link: data.location,
-          };
-        }
+    const newState = this.state
+    newState.values.attachments.push(fileItem.file);
+    this.setState(newState)
 
-        const newState = { ...this.state };
-        newState.values.attachments = [
-          ...newState.values.attachments,
-          attachment,
-        ];
-        this.setState(newState);
-      })
-      .catch((err) => console.error(err));
   };
 
   handleItemAttachmentsRemove = (fileItem) => {
-    let filename = `https://gymapp-assets.s3.amazonaws.com/uploads/${fileItem.filename}`;
+    const newState = this.state;
+    let itemIndex = this.state.values.attachments.findIndex(function (c) {
+      return c == fileItem.file;
+    });
 
-    const newState = { ...this.state };
-
-    newState.values.attachments = this.state.values.attachments.filter(
-      (attachment) => attachment.attachment_link !== filename
-    );
-    this.setState(newState);
+    if (itemIndex !== -1) {
+      newState.values.attachments.splice(itemIndex, 1);
+      this.setState(newState);
+    }
   };
 
   handleFieldChange = (field, value) => {
@@ -571,6 +558,7 @@ class NewItems extends React.Component {
 
   handleInvalidSubmit = () => {
     const newState = { ...this.state };
+    newState.submitting =  false;
     newState.touched.type = true;
     newState.touched.brand = true;
     newState.touched.manufacturer = true;
@@ -587,19 +575,37 @@ class NewItems extends React.Component {
     const {
       values,
     } = this.state;
+    this.setState({
+      submitting: true
+    })
     if(values.productType && values.productCategory && values.productManufacturer && values.productBrand){
-      this.props.createNewItem(this.state.values).then((item) => {
+
+      var bodyFormData = new FormData
+      bodyFormData.append('productName', values.productName)
+      bodyFormData.append('productDescription', values.productDescription)
+      bodyFormData.append('productPrice', values.productPrice)
+      bodyFormData.append('productCategory', values.productCategory)
+      bodyFormData.append('productType', values.productType)
+      bodyFormData.append('productBrand', values.productBrand)
+      bodyFormData.append('productQuantity', values.productQuantity)
+      bodyFormData.append('productManufacturer', values.productManufacturer)
+      bodyFormData.append('file', values.attachments[0])
+
+      this.props.createNewItem(bodyFormData).then((item) => {
         if (item) {
           if (item.status === 200) {
             this.setState({
+              submitting:false,
               toastrInstance: "success",
               toastrTitle: "Success",
+            
               toastrMessage: "You have successfully created a item",
             });
             this.showToastr();
             this.props.history.push("/items");
           }else{
             this.setState({
+              submitting:false,
               toastrInstance: "error",
               toastrTitle: "Error",
               toastrMessage: "Something went wrong please try again",
@@ -615,7 +621,7 @@ class NewItems extends React.Component {
   };
 
   render() {
-    const { touched, values } = this.state;
+    const { touched, values, submitting } = this.state;
     const showTypeError = touched.type && !values.productType;
     const showCategoryError = touched.category && !values.productCategory;
     const showManufactureError = touched.manufacturer && !values.productManufacturer;
@@ -647,7 +653,7 @@ class NewItems extends React.Component {
             showManufactureError={showManufactureError}
             showBrandError={showBrandError}
           />
-          <ActionPanel props={this.props} />
+          <ActionPanel props={this.props} submitting={submitting}/>
         </AvForm>
       </Container>
     );

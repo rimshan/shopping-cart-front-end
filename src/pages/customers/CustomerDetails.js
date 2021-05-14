@@ -3,11 +3,7 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  Col,
-  Container,
-  Row,
   Table,
-  Button
 } from "reactstrap";
 
 class BasicTable extends React.Component {
@@ -23,7 +19,9 @@ class BasicTable extends React.Component {
           <tbody>
             <tr>
               <th>Name</th>
-              <td>{customer.firstName} {customer.lastName && customer.lastName}</td>
+              <td>
+                {customer.firstName} {customer.lastName && customer.lastName}
+              </td>
             </tr>
             <tr>
               <th>Email</th>

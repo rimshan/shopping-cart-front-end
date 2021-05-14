@@ -39,25 +39,19 @@ function login(email, password) {
     });
 }
 function logout() {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("user");
   return axios
     .get(API_URL + `auth/logout`)
     .then((user) => {
       //localStorage.setItem("user", JSON.stringify(user));
       localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("first_name");
-      localStorage.removeItem("last_name");
-      localStorage.removeItem("organization_name");
-      localStorage.removeItem("legal_name_of_business");
+      localStorage.removeItem("user");
       return user;
     })
     .catch(function (error) {
       localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("first_name");
-      localStorage.removeItem("last_name");
-      localStorage.removeItem("organization_name");
-      localStorage.removeItem("legal_name_of_business");
+      localStorage.removeItem("user");
       return error.response;
     });
 }

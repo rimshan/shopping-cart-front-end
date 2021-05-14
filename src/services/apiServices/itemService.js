@@ -10,15 +10,19 @@ export const itemService = {
   getItemValues,
   createItemOptions,
   createItemVariantValues,
+  deleteItem
 };
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 function createNewItem(item) {
+
+
   return axios({
     method: "post",
     url: API_URL + `products/`,
     data: item,
+    
   })
     .then(function (response) {
       return response;
@@ -41,6 +45,20 @@ function updateItem(item, id) {
       return response;
     });
 }
+
+function deleteItem( id) {
+  return axios({
+    method: "delete",
+    url: API_URL + `products/${id}`,
+  })
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (response) {
+      return response;
+    });
+}
+
 
 function getAllItems(organization_id, pageSize) {
   return axios({

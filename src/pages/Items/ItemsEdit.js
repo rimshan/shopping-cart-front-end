@@ -87,6 +87,10 @@ const serverConfig = {
 
 const ItemEditForm = (props) => {
   const edit_item = props.edit_item;
+  let file = props.file
+  if(edit_item.productImageUrl !== "__isNew__"){
+    file = "http://localhost:3000/uploads/" + edit_item.productImageUrl
+  }
   const customStyles = {
     control: (base, state) => ({
       ...base,
@@ -116,12 +120,13 @@ const ItemEditForm = (props) => {
             <Label sm={2} className="text-sm-right"></Label>
             <Col sm={6}>
               <FilePond
-                allowMultiple={true}
+                allowMultiple={false}
+                files={file}
                 imagePreviewMaxHeight="200"
                 onremovefile={(error, file) =>
                   props.handleItemAttachmentsRemove(file)
                 }
-                onaddfilestart={(file) => props.handleItemAttachments(file)}
+                onupdatefiles={(file) => props.handleItemAttachments(file)}
               />
             </Col>
           </AvGroup>
@@ -294,7 +299,7 @@ const ItemEditForm = (props) => {
 
 const ActionPanel = (props) => (
   <div className="mb-4">
-    <Button type="submit" color="primary" className="mr-1 mb-1">
+    <Button disabled={props.submitting} type="submit" color="primary" className="mr-1 mb-1">
       Save
     </Button>
 
@@ -311,12 +316,13 @@ const ActionPanel = (props) => (
 
 class NewItems extends React.Component {
   state = {
+    file: null,
     toastrInstance: "",
     toastrTitle: "",
     toastrMessage: "",
     index: false,
     item_attachments: [{}],
-    files: [],
+    files: {},
     manufacturersOptionList: null,
     OrganizationTaxOptionList: [],
     brandsOptionList: [],
@@ -332,6 +338,7 @@ class NewItems extends React.Component {
       manufacturer: false,
       brand: false
     },
+    submitting: false,
     edit_item: this.props.location.state.item,
   };
 
@@ -518,51 +525,20 @@ class NewItems extends React.Component {
 
 
   handleItemAttachments = async (fileItem) => {
-    if (fileItem.file.__proto__.constructor.name === "File") {
-      S3FileUpload.uploadFile(fileItem.file, config)
-        .then((data) => {
-          let attachment = {
-            attachment_link: data.location,
-          };
-          const newState = { ...this.state };
-          newState.values.attachments = [
-            ...newState.values.attachments,
-            attachment,
-          ];
-
-          newState.item_attachments = [
-            ...newState.item_attachments,
-            {
-              source: data.location,
-              options: {
-                type: "local",
-                file: fileItem.file,
-              },
-            },
-          ];
-          this.setState(newState);
-        })
-        .catch((err) => console.error(err));
-    }
+    console.log(fileItem)
+    const newState = this.state
+    newState.file = fileItem[0];
+    this.setState(newState)
+    console.log(this.state.file)
   };
 
   handleItemAttachmentsRemove = (fileItem) => {
-    let filename = `https://gymapp-assets.s3.amazonaws.com/uploads/${fileItem.filename}`;
-
-    const newState = { ...this.state };
-
-    newState.item_attachments = this.state.item_attachments.filter(
-      (attachment) => attachment.source !== filename
-    );
-
-    newState.values.attachments = this.state.values.attachments.filter(
-      (attachment) => attachment.attachment_link !== filename
-    );
-    this.setState(newState);
-
-    S3FileUpload.deleteFile(fileItem.file, config)
-      .then((response) => console.log(response))
-      .catch((err) => console.error(err));
+    const newState = this.state;
+      newState.edit_item.productImageUrl = "__isNew__";
+      newState.file = null;
+      this.setState(newState);
+      console.log(this.state)
+    
   };
 
   handleFieldChange = (field, value) => {
@@ -601,6 +577,7 @@ class NewItems extends React.Component {
 
   handleInvalidSubmit = () => {
     const newState = { ...this.state };
+    newState.submitting = false
     newState.touched.type = true;
     newState.touched.brand = true;
     newState.touched.manufacturer = true;
@@ -615,53 +592,77 @@ class NewItems extends React.Component {
 
   handleSubmit = async () => {
     const {
-      manufacturer,
-      brand,
-      category,
-      organization_tax,
       touched,
       values,
       edit_item,
-      variantsOption,
+      file,
+      submitting
     } = this.state;
-    const organization_id = localStorage.getItem("organization_id");
 
     const newState = { ...this.state };
     newState.touched.unit = true;
+    newState.submitting  =true;
     this.setState(newState);
-    const showUnitError = touched.unit && values.unit_id === "";
-    if(edit_item.productType && edit_item.productCategory && edit_item.productManufacturer && edit_item.productBrand){
-      this.props
-      .updateItem(this.state.edit_item, this.state.edit_item._id)
-      .then((item) => {
-        if (item) {
-          if (item.status === 200) {
-            this.setState({
-              toastrInstance: "success",
-              toastrTitle: "Success",
-              toastrMessage: "You have successfully updated the item",
-            });
-            this.showToastr();
-            this.props.history.push("/items");
-          }else{
-            this.setState({
-              toastrInstance: "error",
-              toastrTitle: "Error",
-              toastrMessage: "Something went wrong please try again",
-            });
-            this.showToastr();
+    console.log(file)
+    if((edit_item.productImageUrl != "__isNew__" || file)){
+      if(edit_item.productType && edit_item.productCategory && edit_item.productManufacturer && edit_item.productBrand){
+        var bodyFormData = new FormData
+        bodyFormData.append('productName', edit_item.productName)
+        bodyFormData.append('productDescription', edit_item.productDescription)
+        bodyFormData.append('productPrice', edit_item.productPrice)
+        bodyFormData.append('productCategory', edit_item.productCategory)
+        bodyFormData.append('productType', edit_item.productType)
+        bodyFormData.append('productBrand', edit_item.productBrand)
+        bodyFormData.append('productQuantity', edit_item.productQuantity)
+        bodyFormData.append('productManufacturer', edit_item.productManufacturer)
+        bodyFormData.append('productImageUrl', edit_item.productImageUrl)
+        bodyFormData.append('file', file?.file)
+
+    
+        this.props
+        .updateItem(bodyFormData, this.state.edit_item._id)
+        .then((item) => {
+          if (item) {
+            if (item.status === 200) {
+              this.setState({
+                submitting: false,
+                toastrInstance: "success",
+                toastrTitle: "Success",
+                toastrMessage: "You have successfully updated the item",
+              });
+              this.showToastr();
+              this.props.history.push("/items");
+            }else{
+              this.setState({
+                submitting: false,
+                toastrInstance: "error",
+                toastrTitle: "Error",
+                toastrMessage: "Something went wrong please try again",
+              });
+              this.showToastr();
+            }
           }
-        }
-      });
+        });
+      }else{
+        this.handleInvalidSubmit()
+      }
     }else{
-      this.handleInvalidSubmit()
+      this.setState({
+        submitting: false,
+        toastrInstance: "error",
+        toastrTitle: "Error",
+        toastrMessage: "Please add an attachment",
+      });
+      this.showToastr();
     }
+   
  
   };
   render() {
     const {
       touched,
       edit_item,
+      submitting
     } = this.state;
     const showTypeError = touched.type && !edit_item.productType;
     const showCategoryError = touched.category && !edit_item.productCategory;
@@ -676,6 +677,7 @@ class NewItems extends React.Component {
               model={this.state.edit_item}
             >
               <ItemEditForm
+              file={this.state.file}
                 props={this.state}
                 item={this.state.item}
                 edit_item={this.state.edit_item}
@@ -700,7 +702,7 @@ class NewItems extends React.Component {
                 showTypeError={showTypeError}
               />
 
-              <ActionPanel props={this.props} />
+              <ActionPanel props={this.props} submitting={submitting} />
             </AvForm>
 
       </Container>

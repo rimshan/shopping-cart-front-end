@@ -1,31 +1,25 @@
 import React from "react";
 
 import CustomerTable from "./CustomerTable";
-import {
+import { Container } from "reactstrap";
 
-  Container,
-
-} from "reactstrap";
-
-import moment from "moment";
-import { DatePickerInput } from "rc-datepicker";
 import "rc-datepicker/lib/style.css";
 
 class Customer extends React.Component {
   state = {
     startDate: "st",
-    endDate: ""
+    endDate: "",
   };
 
-  setStartDate = date => {
+  setStartDate = (date) => {
     this.setState({
-      startDate: date
+      startDate: date,
     });
   };
 
-  setEndDate = date => {
+  setEndDate = (date) => {
     this.setState({
-      endDate: date
+      endDate: date,
     });
   };
   render() {
