@@ -1,19 +1,15 @@
 import React from "react";
-import { Link, Redirect, withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { itemActions } from "../../redux/actions/itemActions";
 import { userActions } from "../../redux/actions/userActions";
 import {
-  organizationAction,
   organizationActions,
 } from "../../redux/actions/organizationAction";
-
 import Statistics from "./Statistics";
 import CustomerOrders from "./CustomerOrders";
 import CustomerDetails from "./CustomerDetails";
-import CustomerPayments from "./CustomerPayments";
-import CustomerTimeline from "./CustomerTimeline";
-import CustomerTrails from "./CustomerTrails";
+
 import {
   Container,
   Row,
@@ -22,10 +18,6 @@ import {
   Label,
   Breadcrumb,
   BreadcrumbItem,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
   Button,
   Modal,
   ModalBody,
@@ -34,17 +26,11 @@ import {
   Input
 } from "reactstrap";
 import Select from "react-select";
-import moment from "moment";
-import { DatePickerInput } from "rc-datepicker";
 import "rc-datepicker/lib/style.css";
 import avatar4 from "../../assets/img/avatars/avatar-4.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCheck,
   faExclamation,
-  faGlobeAmericas,
-  faInfo,
-  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 
 const options = [
@@ -116,31 +102,6 @@ class Customer extends React.Component {
           </Breadcrumb>
         </div>
         <div className=" float-right pull-right ">
-          {/* <Button
-            tag={Link}
-            to="/add-customer"
-            className="mr-3 "
-            outline
-            color="primary"
-          >
-            Edit Customer
-          </Button> */}
-          {/* <UncontrolledButtonDropdown>
-            <DropdownToggle caret color="primary">
-              Add{" "}
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem onClick={() => this.togglePayment()}>
-                Payment
-              </DropdownItem>
-              <DropdownItem onClick={() => this.toggleTrial()}>
-                Trial
-              </DropdownItem>
-              <DropdownItem onClick={() => this.toggleExam()}>
-                Exam
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledButtonDropdown> */}
           <Modal
             isOpen={this.state.paymentModel}
             toggle={() => this.togglePayment()}
@@ -187,19 +148,7 @@ class Customer extends React.Component {
                   <Input type="text" name="ref_no" placeholder="Amount" />
                 </Col>
               </FormGroup>
-              {/* <FormGroup row>
-                <Label sm={2} className="text-sm-right">
-                  Payment Date
-                </Label>
-                <Col sm={2}>
-                  <DatePicker
-                    placeholderText="Click to select a date"
-                    selected={this.state.payment_date}
-                    isClearable
-                    onChange={date => this.setPaymnentDate(date)}
-                  />
-                </Col>
-              </FormGroup> */}
+
             </ModalBody>
             <ModalFooter>
               <Button color="secondary" onClick={() => this.toggleExam()}>
@@ -256,12 +205,9 @@ class Customer extends React.Component {
         <Row>
           <Col lg="8">
             <CustomerOrders />
-            {/* <CustomerPayments /> */}
-            {/* <CustomerTrails /> */}
           </Col>
           <Col lg="4">
             <CustomerDetails customer={customer} />
-            {/* <CustomerTimeline /> */}
           </Col>
         </Row>
       </Container>

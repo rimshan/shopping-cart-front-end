@@ -288,34 +288,6 @@ class VehicleSettings extends React.Component {
                   />
                 </Col>
               </FormGroup>
-              {/* <FormGroup row>
-              <Label sm={3} className="text-sm-right">
-                Reg. Year
-              </Label>
-              <Col sm={6}>
-                <DatePickerInput
-                  displayFormat="YYYY"
-                  value={this.state.reg_year}
-                  onChange={this.setRegYear}
-                />
-              </Col>
-            </FormGroup> */}
-
-              {/* <FormGroup row>
-              <Label sm={3} className="text-sm-right">
-                Transmission
-              </Label>
-              <Col sm={6}>
-                <Select
-                  className="react-select-container"
-                  classNamePrefix="react-select"
-                  options={options}
-                  placeholder="Select Transmission Type"
-                  isSearchable
-                  isClearable
-                />
-              </Col>
-            </FormGroup> */}
             </ModalBody>
             <ModalFooter>
               <Button color="primary" type="submit">
