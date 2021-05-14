@@ -1,13 +1,10 @@
 import React from "react";
-import { Link, Redirect, withRouter } from "react-router-dom";
+import {  withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { itemActions } from "../../redux/actions/itemActions";
 import { userActions } from "../../redux/actions/userActions";
 import { salesOrderActions } from "../../redux/actions/salesOrderActions";
-import {
-  organizationAction,
-  organizationActions,
-} from "../../redux/actions/organizationAction";
+
 import {
   Button,
   Card,
@@ -15,20 +12,9 @@ import {
   CardHeader,
   CardTitle,
   Col,
-  Container,
-  CustomInput,
-  Form,
   FormGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
-  FormText,
   Input,
-  InputGroup,
-  InputGroupAddon,
   Label,
-  Row,
   Table,
   Modal,
   ModalBody,
@@ -37,23 +23,17 @@ import {
 } from "reactstrap";
 import Select from "react-select";
 import { toastr } from "react-redux-toastr";
-import DatePicker from "react-datepicker";
 import moment from "moment";
-import "react-datepicker/dist/react-datepicker.css";
 
-import { Edit2, Trash , Eye} from "react-feather";
 
-import avatar1 from "../../assets/img/avatars/avatar.jpg";
-import avatar2 from "../../assets/img/avatars/avatar-2.jpg";
+import { Eye} from "react-feather";
 import avatar3 from "../../assets/img/avatars/avatar-3.jpg";
-import avatar4 from "../../assets/img/avatars/avatar-4.jpg";
 
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
-import { MinusCircle, PlusCircle } from "react-feather";
-const { SearchBar } = Search;
+
 const options = [
   { value: 1, label: "Pending" },
   { value: 2, label: "Approved" },
@@ -71,11 +51,6 @@ const tableColumns = [
       return { width: "25%", textAlign: "left" };
     },
   },
-  // {
-  //   dataField: "orderPaymentMethod",
-  //   text: "Payment Method",
-  //   sort: true,
-  // },
   {
     dataField: "orderTotal",
     text: "Total",
@@ -143,7 +118,7 @@ function nameFormatter(cell, row, rowIndex, formatExtraData) {
   return (
     <div>
       <img
-        src={avatar4}
+        src={avatar3}
         width="28"
         height="28"
         className="rounded-circle mr-2"
@@ -160,8 +135,6 @@ function actionFormatter(cell, row, rowIndex, formatExtraData) {
   return (
     <div>
       <Button
-        // tag={Link}
-      //  onChange={this.rowEvents}
         color="outline"
         className="mt-n1"
       >
@@ -171,16 +144,6 @@ function actionFormatter(cell, row, rowIndex, formatExtraData) {
   );
 }
 
-const MyExportCSV = (props) => {
-  const handleClick = () => {
-    props.onExport();
-  };
-  return (
-    <div>
-      <span onClick={handleClick}>Export</span>
-    </div>
-  );
-};
 
 class CustomerExams extends React.Component {
   constructor(props) {
@@ -304,7 +267,7 @@ componentDidUpdate(prevProps) {
     });
   }
   render() {
-    const { order, customerOrders } = this.state;
+    const { order } = this.state;
     return (
       <div>
         <Modal
@@ -447,9 +410,6 @@ componentDidUpdate(prevProps) {
             <Button color="secondary" onClick={() => this.toggleOrder()}>
               Close
             </Button>{" "}
-            {/* <Button color="primary" onClick={() => this.updtateOrder()}>
-              Save
-            </Button> */}
           </ModalFooter>
         </Modal>
 
@@ -502,7 +462,6 @@ const mapActionToProps = {
   getCustomerOrders: userActions.getuserOrders,
   updtateOrder :salesOrderActions.update,
   getCustomerByID: userActions.getuserByID,
-  getOrganizationLocations: organizationActions.getOrganizationLocations,
 };
 
 export default withRouter(connect(mapStateToProps, mapActionToProps)(CustomerExams));

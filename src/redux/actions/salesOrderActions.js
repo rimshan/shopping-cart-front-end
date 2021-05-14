@@ -8,6 +8,7 @@ export const salesOrderActions = {
   getSalesOrders,
   getSalesOrder,
   update,
+  getSalesOrderStats
 };
 
 function getSalesOrderCount() {
@@ -132,6 +133,27 @@ function getSalesOrders() {
     dispatch(request());
 
     return salesOrderService.getSalesOrders().then(
+      (orders) => dispatch(success(orders)),
+      (error) => dispatch(failure(error))
+    );
+  };
+
+  function request() {
+    return { type: types.GET_SALES_ORDERS_REQUEST };
+  }
+  function success(orders) {
+    return { type: types.GET_SALES_ORDERS_SUCCESS, orders };
+  }
+  function failure(error) {
+    return { type: types.GET_SALES_ORDERS_FAILURE, error };
+  }
+}
+
+function getSalesOrderStats() {
+  return (dispatch) => {
+    dispatch(request());
+
+    return salesOrderService.getSalesOrdersStats().then(
       (orders) => dispatch(success(orders)),
       (error) => dispatch(failure(error))
     );

@@ -87,9 +87,9 @@ const serverConfig = {
 
 const ItemEditForm = (props) => {
   const edit_item = props.edit_item;
-  let file = props.file
-  if(edit_item.productImageUrl !== "__isNew__"){
-    file = "http://localhost:3000/uploads/" + edit_item.productImageUrl
+  let file = props.file;
+  if (edit_item.productImageUrl !== "__isNew__") {
+    file = "http://localhost:3000/uploads/" + edit_item.productImageUrl;
   }
   const customStyles = {
     control: (base, state) => ({
@@ -232,20 +232,19 @@ const ItemEditForm = (props) => {
               Category
             </Label>
             <Col sm={4}>
-              <CreatableSelect
-                isClearable
+              <Select
                 onChange={props.handleCategoryChange}
                 value={props.categoriesOptionList?.filter(
                   (option) => option.value === edit_item.productCategory
                 )}
                 options={props.categoriesOptionList}
                 styles={props.showCategoryError ? customStyles : ""}
-                />
-                 {props.showCategoryError && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    Category is required!
-                  </span>
-                )}
+              />
+              {props.showCategoryError && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Category is required!
+                </span>
+              )}
             </Col>
           </AvGroup>
           <FormGroup row>
@@ -253,40 +252,38 @@ const ItemEditForm = (props) => {
               Manufacturer
             </Label>
             <Col sm={4}>
-              <CreatableSelect
-                isClearable
+              <Select
                 onChange={props.handleManufacturerChange}
                 value={props.manufacturersOptionList?.filter(
                   (option) => option.value === edit_item.productManufacturer
                 )}
                 options={props.manufacturersOptionList}
                 styles={props.showManufactureError ? customStyles : ""}
-                />
-                 {props.showManufactureError && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    Manufacturer is required!
-                  </span>
-                )}
+              />
+              {props.showManufactureError && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Manufacturer is required!
+                </span>
+              )}
             </Col>
             <Label sm={2} className="text-sm-right">
               Brand
             </Label>
             <Col sm={4}>
-              <CreatableSelect
+              <Select
                 style={{ borderColor: "#dc3545" }}
-                isClearable
                 onChange={props.handleBrandChange}
                 value={props.brandsOptionList?.filter(
                   (option) => option.value === edit_item.productBrand
                 )}
                 options={props.brandsOptionList}
                 styles={props.showBrandError ? customStyles : ""}
-                />
-                 {props.showBrandError && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    Brand is required!
-                  </span>
-                )}
+              />
+              {props.showBrandError && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  Brand is required!
+                </span>
+              )}
             </Col>
           </FormGroup>
         </CardBody>
@@ -295,11 +292,14 @@ const ItemEditForm = (props) => {
   );
 };
 
-
-
 const ActionPanel = (props) => (
   <div className="mb-4">
-    <Button disabled={props.submitting} type="submit" color="primary" className="mr-1 mb-1">
+    <Button
+      disabled={props.submitting}
+      type="submit"
+      color="primary"
+      className="mr-1 mb-1"
+    >
       Save
     </Button>
 
@@ -336,7 +336,7 @@ class NewItems extends React.Component {
       type: false,
       category: false,
       manufacturer: false,
-      brand: false
+      brand: false,
     },
     submitting: false,
     edit_item: this.props.location.state.item,
@@ -381,18 +381,15 @@ class NewItems extends React.Component {
     // this.setState(() => ({
     //   item_attachments,
     // }));
-    this.getItem()
-
+    this.getItem();
 
     this.getBrands();
     this.getCategories();
     this.getManufacturers();
-    this.getTypes()
-
-
+    this.getTypes();
   }
 
-  getItem = () =>{
+  getItem = () => {
     this.props.getItem(this.props.location.state.item._id).then((item) => {
       if (item.item) {
         this.setState({
@@ -400,11 +397,7 @@ class NewItems extends React.Component {
         });
       }
     });
-  }
-
-
-
-
+  };
 
   getTypes = () => {
     this.props.getProductTypes().then((types) => {
@@ -419,8 +412,6 @@ class NewItems extends React.Component {
       }
     });
   };
-
-
 
   getManufacturers = async () => {
     this.props
@@ -470,75 +461,35 @@ class NewItems extends React.Component {
     });
   };
 
-  handleManufacturerChange = (newValue) => {
-    if (newValue !== null && newValue.__isNew__) {
-      const newState = { ...this.state };
-      newState.edit_item.productManufacturer = newValue;
-      this.setState(newState);
-    } else if (newValue !== null) {
-      const newState = { ...this.state };
-      newState.edit_item.productManufacturer = newValue.value;
-      this.setState(newState);
-    } else if (newValue === null) {
-      const newState = { ...this.state };
-      newState.manufacturer = null;
-      newState.edit_item.productManufacturer = "";
-      this.setState(newState);
-    }
-    
+  handleManufacturerChange = (selectedOption) => {
+    const newState = { ...this.state };
+    newState.edit_item["productManufacturer"] = selectedOption.value;
+    this.setState(newState);
   };
 
-  handleBrandChange = (newValue) => {
-    if (newValue !== null && newValue.__isNew__) {
-      const newState = { ...this.state };
-      newState.edit_item.productBrand = newValue;
-      this.setState(newState);
-    } else if (newValue !== null) {
-      const newState = { ...this.state };
-      newState.edit_item.productBrand = newValue.value;
-      this.setState(newState);
-    } else if (newValue === null) {
-      const newState = { ...this.state };
-      newState.brand = null;
-      newState.edit_item.productBrand = "";
-      this.setState(newState);
-    }
+  handleBrandChange = (selectedOption) => {
+    const newState = { ...this.state };
+    newState.edit_item["productBrand"] = selectedOption.value;
+    this.setState(newState);
   };
 
-  handleCategoryChange = (newValue) => {
-    if (newValue !== null && newValue.__isNew__) {
-      const newState = { ...this.state };
-      newState.edit_item.productCategory = newValue;
-      this.setState(newState);
-    } else if (newValue !== null) {
-      const newState = { ...this.state };
-      newState.edit_item.productCategory = newValue.value;
-      this.setState(newState);
-    } else if (newValue === null) {
-      const newState = { ...this.state };
-      newState.category = null;
-      newState.edit_item.productCategory = "";
-      this.setState(newState);
-    }
+  handleCategoryChange = (selectedOption) => {
+    const newState = { ...this.state };
+    newState.edit_item["productCategory"] = selectedOption.value;
+    this.setState(newState);
   };
-
-
 
   handleItemAttachments = async (fileItem) => {
-    console.log(fileItem)
-    const newState = this.state
+    const newState = this.state;
     newState.file = fileItem[0];
-    this.setState(newState)
-    console.log(this.state.file)
+    this.setState(newState);
   };
 
   handleItemAttachmentsRemove = (fileItem) => {
     const newState = this.state;
-      newState.edit_item.productImageUrl = "__isNew__";
-      newState.file = null;
-      this.setState(newState);
-      console.log(this.state)
-    
+    newState.edit_item.productImageUrl = "__isNew__";
+    newState.file = null;
+    this.setState(newState);
   };
 
   handleFieldChange = (field, value) => {
@@ -572,12 +523,9 @@ class NewItems extends React.Component {
     });
   };
 
-
-
-
   handleInvalidSubmit = () => {
     const newState = { ...this.state };
-    newState.submitting = false
+    newState.submitting = false;
     newState.touched.type = true;
     newState.touched.brand = true;
     newState.touched.manufacturer = true;
@@ -591,62 +539,61 @@ class NewItems extends React.Component {
   };
 
   handleSubmit = async () => {
-    const {
-      touched,
-      values,
-      edit_item,
-      file,
-      submitting
-    } = this.state;
+    const { touched, values, edit_item, file, submitting } = this.state;
 
     const newState = { ...this.state };
     newState.touched.unit = true;
-    newState.submitting  =true;
+    newState.submitting = true;
     this.setState(newState);
-    console.log(file)
-    if((edit_item.productImageUrl != "__isNew__" || file)){
-      if(edit_item.productType && edit_item.productCategory && edit_item.productManufacturer && edit_item.productBrand){
-        var bodyFormData = new FormData
-        bodyFormData.append('productName', edit_item.productName)
-        bodyFormData.append('productDescription', edit_item.productDescription)
-        bodyFormData.append('productPrice', edit_item.productPrice)
-        bodyFormData.append('productCategory', edit_item.productCategory)
-        bodyFormData.append('productType', edit_item.productType)
-        bodyFormData.append('productBrand', edit_item.productBrand)
-        bodyFormData.append('productQuantity', edit_item.productQuantity)
-        bodyFormData.append('productManufacturer', edit_item.productManufacturer)
-        bodyFormData.append('productImageUrl', edit_item.productImageUrl)
-        bodyFormData.append('file', file?.file)
-
-    
+    if (edit_item.productImageUrl != "__isNew__" || file) {
+      if (
+        edit_item.productType &&
+        edit_item.productCategory &&
+        edit_item.productManufacturer &&
+        edit_item.productBrand
+      ) {
+        var bodyFormData = new FormData();
+        bodyFormData.append("productName", edit_item.productName);
+        bodyFormData.append("productDescription", edit_item.productDescription);
+        bodyFormData.append("productPrice", edit_item.productPrice);
+        bodyFormData.append("productCategory", edit_item.productCategory);
+        bodyFormData.append("productType", edit_item.productType);
+        bodyFormData.append("productBrand", edit_item.productBrand);
+        bodyFormData.append("productQuantity", edit_item.productQuantity);
+        bodyFormData.append(
+          "productManufacturer",
+          edit_item.productManufacturer
+        );
+        bodyFormData.append("productImageUrl", edit_item.productImageUrl);
+        bodyFormData.append("file", file?.file);
         this.props
-        .updateItem(bodyFormData, this.state.edit_item._id)
-        .then((item) => {
-          if (item) {
-            if (item.status === 200) {
-              this.setState({
-                submitting: false,
-                toastrInstance: "success",
-                toastrTitle: "Success",
-                toastrMessage: "You have successfully updated the item",
-              });
-              this.showToastr();
-              this.props.history.push("/items");
-            }else{
-              this.setState({
-                submitting: false,
-                toastrInstance: "error",
-                toastrTitle: "Error",
-                toastrMessage: "Something went wrong please try again",
-              });
-              this.showToastr();
+          .updateItem(bodyFormData, this.state.edit_item._id)
+          .then((item) => {
+            if (item) {
+              if (item.status === 200) {
+                this.setState({
+                  submitting: false,
+                  toastrInstance: "success",
+                  toastrTitle: "Success",
+                  toastrMessage: "You have successfully updated the item",
+                });
+                this.showToastr();
+                this.props.history.push("/items");
+              } else {
+                this.setState({
+                  submitting: false,
+                  toastrInstance: "error",
+                  toastrTitle: "Error",
+                  toastrMessage: "Something went wrong please try again",
+                });
+                this.showToastr();
+              }
             }
-          }
-        });
-      }else{
-        this.handleInvalidSubmit()
+          });
+      } else {
+        this.handleInvalidSubmit();
       }
-    }else{
+    } else {
       this.setState({
         submitting: false,
         toastrInstance: "error",
@@ -655,56 +602,49 @@ class NewItems extends React.Component {
       });
       this.showToastr();
     }
-   
- 
   };
   render() {
-    const {
-      touched,
-      edit_item,
-      submitting
-    } = this.state;
+    const { touched, edit_item, submitting } = this.state;
     const showTypeError = touched.type && !edit_item.productType;
     const showCategoryError = touched.category && !edit_item.productCategory;
-    const showManufactureError = touched.manufacturer && !edit_item.productManufacturer;
+    const showManufactureError =
+      touched.manufacturer && !edit_item.productManufacturer;
     const showBrandError = touched.brand && !edit_item.productBrand;
     return (
       <Container>
+        <AvForm
+          onValidSubmit={this.handleSubmit}
+          onInvalidSubmit={this.handleInvalidSubmit}
+          model={this.state.edit_item}
+        >
+          <ItemEditForm
+            file={this.state.file}
+            props={this.state}
+            item={this.state.item}
+            edit_item={this.state.edit_item}
+            handleChecked={this.handleChecked}
+            handleSubmit={this.handleSubmit}
+            productTypesOptionList={this.state.productTypesOptionList}
+            manufacturersOptionList={this.state.manufacturersOptionList}
+            brandsOptionList={this.state.brandsOptionList}
+            categoriesOptionList={this.state.categoriesOptionList}
+            handleFieldChange={this.handleFieldChange}
+            handleStatusChange={this.handleStatusChange}
+            handleProductTypeChange={this.handleProductTypeChange}
+            handleItemAttachments={this.handleItemAttachments}
+            handleItemAttachmentsRemove={this.handleItemAttachmentsRemove}
+            handleManufacturerChange={this.handleManufacturerChange}
+            handleBrandChange={this.handleBrandChange}
+            handleCategoryChange={this.handleCategoryChange}
+            item_attachments={this.state.item_attachments}
+            showBrandError={showBrandError}
+            showCategoryError={showCategoryError}
+            showManufactureError={showManufactureError}
+            showTypeError={showTypeError}
+          />
 
-            <AvForm
-              onValidSubmit={this.handleSubmit}
-              onInvalidSubmit={this.handleInvalidSubmit}
-              model={this.state.edit_item}
-            >
-              <ItemEditForm
-              file={this.state.file}
-                props={this.state}
-                item={this.state.item}
-                edit_item={this.state.edit_item}
-                handleChecked={this.handleChecked}
-                handleSubmit={this.handleSubmit}
-                productTypesOptionList={this.state.productTypesOptionList}
-                manufacturersOptionList={this.state.manufacturersOptionList}
-                brandsOptionList={this.state.brandsOptionList}
-                categoriesOptionList={this.state.categoriesOptionList}
-                handleFieldChange={this.handleFieldChange}
-                handleStatusChange={this.handleStatusChange}
-                handleProductTypeChange={this.handleProductTypeChange}
-                handleItemAttachments={this.handleItemAttachments}
-                handleItemAttachmentsRemove={this.handleItemAttachmentsRemove}
-                handleManufacturerChange={this.handleManufacturerChange}
-                handleBrandChange={this.handleBrandChange}
-                handleCategoryChange={this.handleCategoryChange}
-                item_attachments={this.state.item_attachments}
-                showBrandError={showBrandError}
-                showCategoryError={showCategoryError}
-                showManufactureError={showManufactureError}
-                showTypeError={showTypeError}
-              />
-
-              <ActionPanel props={this.props} submitting={submitting} />
-            </AvForm>
-
+          <ActionPanel props={this.props} submitting={submitting} />
+        </AvForm>
       </Container>
     );
   }

@@ -72,7 +72,7 @@ class Customer extends React.Component {
     this.props.getCustomerByID(this.props.location.state.row._id).then((customer, id) => {
       if (customer.customer && customer.customer.status === 200) {  
         this.setState({
-          customer: customer.customer.data,
+          customer: customer.customer.data?.selectedUser,
         });
       }
     });
@@ -189,7 +189,7 @@ class Customer extends React.Component {
                 </span>
               ) : (
                 <span className="badge badge-success ml-0 mr-2 mb-1">
-                  Completed
+                  Avtive
                 </span>
               )}
 

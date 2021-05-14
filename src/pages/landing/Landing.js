@@ -10,7 +10,6 @@ import Select from "react-select";
 import classnames from "classnames";
 import { PayPalButton } from "react-paypal-button-v2";
 
-import unsplash1 from "../../assets/img/photos/unsplash-1.jpg";
 
 import {
   Input,

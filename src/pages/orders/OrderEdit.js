@@ -1,12 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { salesOrderActions } from "../../redux/actions/salesOrderActions";
-import { itemActions } from "../../redux/actions/itemActions";
 
 import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
-import S3FileUpload from "react-s3";
-import Toggle from "react-toggle";
 import moment from "moment";
 import {
   Button,
@@ -16,38 +13,21 @@ import {
   CardBody,
   CardHeader,
   CardTitle,
-  CardLink,
   Col,
   Container,
-  CustomInput,
-  Form,
   FormGroup,
   Input,
-  InputGroup,
-  InputGroupAddon,
   Label,
-  Row,
-  UncontrolledTooltip,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
 } from "reactstrap";
 
 import { toastr } from "react-redux-toastr";
 
 import {
   AvForm,
-  AvGroup,
-  AvInput,
-  AvFeedback,
 } from "availity-reactstrap-validation";
 
 import Select from "react-select";
-import CreatableSelect from "react-select/creatable";
 
-import "react-datepicker/dist/react-datepicker.css";
-import { Plus, Trash2, HelpCircle } from "react-feather";
 import Table from "reactstrap/lib/Table";
 
 const options = [
@@ -59,18 +39,7 @@ const options = [
 ];
 
 const ItemEditForm = (props) => {
-  const edit_item = props.edit_item;
-  const customStyles = {
-    control: (base, state) => ({
-      ...base,
-      // state.isFocused can display different borderColor if you need it
-      borderColor: "red",
-      // overwrittes hover style
-      "&:hover": {
-        borderColor: "red",
-      },
-    }),
-  };
+
   return (
     <Container fluid className="p-0">
       <Breadcrumb>
@@ -229,7 +198,7 @@ const ActionPanel = (props) => (
       color="primary"
       className="mr-1 mb-1"
       outline
-      onClick={() => props.props.history.push("/items")}
+      onClick={() => props.props.history.push("/orders")}
     >
       Cancel
     </Button>

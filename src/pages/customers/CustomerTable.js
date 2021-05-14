@@ -1,68 +1,29 @@
 import React from "react";
-import { Link, Redirect, withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { itemActions } from "../../redux/actions/itemActions";
 import { userActions } from "../../redux/actions/userActions";
-import {
-  organizationAction,
-  organizationActions,
-} from "../../redux/actions/organizationAction";
+
 import {
   Button,
   Card,
   CardBody,
   CardHeader,
   CardTitle,
-  Col,
-  Container,
-  CustomInput,
-  Form,
-  FormGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
-  FormText,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  Label,
-  Row,
-  Table,
-  UncontrolledPopover,
   UncontrolledTooltip,
-  PopoverBody,
-  PopoverHeader,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
 } from "reactstrap";
-import Select from "react-select";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faExclamation,
-  faGlobeAmericas,
-  faInfo,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
+import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 
-import { Edit2, Trash, Eye } from "react-feather";
+import { Eye } from "react-feather";
 
-import avatar1 from "../../assets/img/avatars/avatar.jpg";
-import avatar2 from "../../assets/img/avatars/avatar-2.jpg";
-import avatar3 from "../../assets/img/avatars/avatar-3.jpg";
 import avatar4 from "../../assets/img/avatars/avatar-4.jpg";
 
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
-import { MinusCircle, PlusCircle } from "react-feather";
 const { SearchBar } = Search;
-
-
 
 const tableColumns = [
   {
@@ -110,8 +71,8 @@ const tableColumns = [
     dataField: "action",
     text: "Action",
     sort: false,
-    formatter: actionFormatter
-  }
+    formatter: actionFormatter,
+  },
 ];
 
 function actionFormatter(cell, row, rowIndex, formatExtraData) {
@@ -166,20 +127,6 @@ function nameFormatter(cell, row, rowIndex, formatExtraData) {
   );
 }
 
-function refNoFormatter(cell, row, rowIndex, formatExtraData) {
-  return <div className="text-primary">{cell}</div>;
-}
-
-const MyExportCSV = (props) => {
-  const handleClick = () => {
-    props.onExport();
-  };
-  return (
-    <div>
-      <span onClick={handleClick}>Export</span>
-    </div>
-  );
-};
 
 class CustomerTable extends React.Component {
   state = {
@@ -198,7 +145,6 @@ class CustomerTable extends React.Component {
       item_options: [],
     });
     this.props.getCustomers().then((customers, id) => {
-      console.log(customers);
       if (customers.customers && customers.customers.status === 200) {
         this.setState({
           customers: customers.customers.data,
@@ -228,17 +174,14 @@ class CustomerTable extends React.Component {
           {(props) => (
             <div>
               <CardHeader>
-                {/* <div className="float-right pull-right">
-                  <MyExportCSV {...props.csvProps} />
-                </div> */}
                 <div className="float-right pull-right">
                   <SearchBar {...props.searchProps} />
                 </div>
-                <CardTitle tag="h4">{this.state.customers.length} Listed Customers</CardTitle>
+                <CardTitle tag="h4">
+                  {this.state.customers.length} Listed Customers
+                </CardTitle>
               </CardHeader>
               <CardBody>
-
-
                 <BootstrapTable
                   responsive={true}
                   striped
@@ -247,7 +190,6 @@ class CustomerTable extends React.Component {
                   bootstrap4
                   hover={true}
                   bordered={false}
-               
                   pagination={paginationFactory({
                     sizePerPage: 5,
                     sizePerPageList: [5, 10, 25, 50],
@@ -267,9 +209,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapActionToProps = {
-  items: itemActions.getAllItems,
   getCustomers: userActions.getusers,
-  getOrganizationLocations: organizationActions.getOrganizationLocations,
 };
 
 export default withRouter(

@@ -1,65 +1,23 @@
 import React from "react";
-import { Link, Redirect, withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { itemActions } from "../../redux/actions/itemActions";
 import { salesOrderActions } from "../../redux/actions/salesOrderActions";
-import {
-  organizationAction,
-  organizationActions,
-} from "../../redux/actions/organizationAction";
 import {
   Button,
   Card,
   CardBody,
   CardHeader,
   CardTitle,
-  Col,
-  Container,
-  CustomInput,
-  Form,
-  FormGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
-  FormText,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  Label,
-  Row,
-  Table,
-  UncontrolledPopover,
-  UncontrolledTooltip,
-  PopoverBody,
-  PopoverHeader,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
+
 } from "reactstrap";
-import Select from "react-select";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faExclamation,
-  faGlobeAmericas,
-  faInfo,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
 
-import { Edit2, Trash } from "react-feather";
 
-import avatar1 from "../../assets/img/avatars/avatar.jpg";
-import avatar2 from "../../assets/img/avatars/avatar-2.jpg";
+import { Edit2 } from "react-feather";
 import avatar3 from "../../assets/img/avatars/avatar-3.jpg";
-import avatar4 from "../../assets/img/avatars/avatar-4.jpg";
-
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 
-import { MinusCircle, PlusCircle } from "react-feather";
 const { SearchBar } = Search;
 
 
@@ -164,7 +122,7 @@ function nameFormatter(cell, row, rowIndex, formatExtraData) {
   return (
     <div>
       <img
-        src={avatar4}
+        src={avatar3}
         width="28"
         height="28"
         className="rounded-circle mr-2"
@@ -207,7 +165,6 @@ class CustomerTable extends React.Component {
       item_options: [],
     });
     this.props.getOrders().then((orders, id) => {
-      console.log(orders);
       if (orders.orders && orders.orders.status === 200) {
         this.setState({
           orders: orders.orders.data,
@@ -237,9 +194,6 @@ class CustomerTable extends React.Component {
           {(props) => (
             <div>
               <CardHeader>
-                {/* <div className="float-right pull-right">
-                  <MyExportCSV {...props.csvProps} />
-                </div> */}
                 <div className="float-right pull-right">
                   <SearchBar {...props.searchProps} />
                 </div>
@@ -274,9 +228,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapActionToProps = {
-  items: itemActions.getAllItems,
   getOrders: salesOrderActions.getSalesOrders,
-  getOrganizationLocations: organizationActions.getOrganizationLocations,
 };
 
 export default withRouter(

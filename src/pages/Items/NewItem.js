@@ -9,7 +9,6 @@ import { categoryActions } from "../../redux/actions/categoryActions";
 import { organizationActions } from "../../redux/actions/organizationAction";
 import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
-import S3FileUpload from "react-s3";
 import {
   Button,
   Breadcrumb,
@@ -18,40 +17,17 @@ import {
   CardBody,
   CardHeader,
   CardTitle,
-  CardLink,
   Col,
   Container,
-  CustomInput,
-  Form,
   FormGroup,
-  Input,
-  InputGroup,
-  InputGroupAddon,
   Label,
-  Row,
-  UncontrolledTooltip,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  FormFeedback,
-  FormText,
 } from "reactstrap";
 
-import {
-  AvForm,
-  AvGroup,
-  AvInput,
-  AvFeedback,
-} from "availity-reactstrap-validation";
+import { AvForm, AvGroup } from "availity-reactstrap-validation";
 
 import { toastr } from "react-redux-toastr";
 
 import Select from "react-select";
-import CreatableSelect from "react-select/creatable";
-
-import "react-datepicker/dist/react-datepicker.css";
-import { Plus, Trash2, HelpCircle } from "react-feather";
 
 // Import React FilePond
 import { FilePond, registerPlugin } from "react-filepond";
@@ -75,18 +51,6 @@ const config = {
   secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY_ID,
   s3Url: process.env.REACT_APP_S3_URL,
 };
-
-// const customStyles = {
-//   control: (base, state) => ({
-//     ...base,
-//     // state.isFocused can display different borderColor if you need it
-//     borderColor: "red",
-//     // overwrittes hover style
-//     "&:hover": {
-//       //borderColor: "red"
-//     }
-//   })
-// };
 
 const HorizontalForm = (props) => {
   const customStyles = {
@@ -245,8 +209,7 @@ const HorizontalForm = (props) => {
               Category
             </Label>
             <Col sm={4}>
-              <CreatableSelect
-                isClearable
+              <Select
                 onChange={props.handleCategoryChange}
                 options={props.categoriesOptionList}
                 styles={props.showCategoryError ? customStyles : ""}
@@ -263,8 +226,7 @@ const HorizontalForm = (props) => {
               Manufacturer
             </Label>
             <Col sm={4}>
-              <CreatableSelect
-                isClearable
+              <Select
                 onChange={props.handleManufacturerChange}
                 options={props.manufacturersOptionList}
                 styles={props.showManufactureError ? customStyles : ""}
@@ -279,9 +241,8 @@ const HorizontalForm = (props) => {
               Brand
             </Label>
             <Col sm={4}>
-              <CreatableSelect
+              <Select
                 style={{ borderColor: "#dc3545" }}
-                isClearable
                 onChange={props.handleBrandChange}
                 options={props.brandsOptionList}
                 styles={props.showBrandError ? customStyles : ""}
@@ -319,37 +280,14 @@ const ActionPanel = (props) => (
 
 class NewItems extends React.Component {
   state = {
-    is_all_locations: true,
-    manufacturer: null,
-    variantsOption: [],
     files: [],
     index: false,
-    tax_index: false,
-    organization_tax: {
-      name: null,
-      rate: null,
-    },
-    brand: null,
-    category: null,
-    countries: "",
-    industries: "",
     productTypesOptionList: [],
-    variantsOptionList: [],
-    variantsValuesList: [],
     manufacturersOptionList: [],
-    OrganizationTaxOptionList: [],
     brandsOptionList: [],
     categoriesOptionList: [],
-    itemOptions: [],
-    IndustryOptionList: "",
     date: new Date(),
-    expected_delivery_date: new Date(),
     isChecked: false,
-    productOptionValues: null,
-    item_variant_values: [{ id: 1, variant_id: "", values: [] }],
-    locations: [],
-    item_option: [],
-    item_options: [],
     values: {
       attachments: [],
     },
@@ -459,55 +397,22 @@ class NewItems extends React.Component {
     });
   };
 
-  handleManufacturerChange = (newValue) => {
-    if (newValue !== null && newValue.__isNew__) {
-      const newState = { ...this.state };
-      newState.values.productManufacturer = newValue;
-      this.setState(newState);
-    } else if (newValue !== null) {
-      const newState = { ...this.state };
-      newState.values.productManufacturer = newValue.value;
-      this.setState(newState);
-    } else if (newValue === null) {
-      const newState = { ...this.state };
-      newState.manufacturer = null;
-      newState.values.productManufacturer = "";
-      this.setState(newState);
-    }
+  handleManufacturerChange = (selectedOption) => {
+    const newState = { ...this.state };
+    newState.values["productManufacturer"] = selectedOption.value;
+    this.setState(newState);
   };
 
-  handleBrandChange = (newValue) => {
-    if (newValue !== null && newValue.__isNew__) {
-      const newState = { ...this.state };
-      newState.values.productBrand = newValue;
-      this.setState(newState);
-    } else if (newValue !== null) {
-      const newState = { ...this.state };
-      newState.values.productBrand = newValue.value;
-      this.setState(newState);
-    } else if (newValue === null) {
-      const newState = { ...this.state };
-      newState.brand = null;
-      newState.values.productBrand = "";
-      this.setState(newState);
-    }
+  handleBrandChange = (selectedOption) => {
+    const newState = { ...this.state };
+    newState.values["productBrand"] = selectedOption.value;
+    this.setState(newState);
   };
 
-  handleCategoryChange = (newValue) => {
-    if (newValue !== null && newValue.__isNew__) {
-      const newState = { ...this.state };
-      newState.values.productCategory = newValue;
-      this.setState(newState);
-    } else if (newValue !== null) {
-      const newState = { ...this.state };
-      newState.values.productCategory = newValue.value;
-      this.setState(newState);
-    } else if (newValue === null) {
-      const newState = { ...this.state };
-      newState.category = null;
-      newState.values.productCategory = "";
-      this.setState(newState);
-    }
+  handleCategoryChange = (selectedOption) => {
+    const newState = { ...this.state };
+    newState.values["productCategory"] = selectedOption.value;
+    this.setState(newState);
   };
 
   handleItemAttachments = async (fileItem) => {

@@ -7,6 +7,7 @@ export const salesOrderService = {
   getSalesOrders,
   getSalesOrder,
   updateSalesOrder,
+  getSalesOrdersStats
 };
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -96,3 +97,19 @@ function getSalesOrders() {
       return response.response;
     });
 }
+
+
+function getSalesOrdersStats() {
+  return axios({
+    method: "get",
+    url: API_URL + `orders/status`,
+
+  })
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (response) {
+      return response.response;
+    });
+}
+
