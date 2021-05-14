@@ -7,7 +7,7 @@ const Statistics = () => (
       <Card className="flex-fill">
         <CardHeader>
           {/* <span className="badge badge-primary float-right">Today</span> */}
-          <h5 className="card-title mb-0">Passed</h5>
+          <h5 className="card-title mb-0">Total Orders</h5>
         </CardHeader>
         <CardBody className="my-2">
           <Row className="d-flex align-items-center mb-4">
@@ -16,18 +16,18 @@ const Statistics = () => (
                 $37.500
               </h2> */}
               <span className=" h2 font-weight-dark">88 </span>
-              <span className="text-muted">out of 100</span>
+              <span className="text-muted"></span>
             </Col>
             {/* <Col xs="4" className="text-right">
               <span className="text-muted">57%</span>
             </Col> */}
           </Row>
 
-          <Progress
+          {/* <Progress
             color="primary"
             value={88}
             className="progress-sm shadow-sm mb-1"
-          />
+          /> */}
         </CardBody>
       </Card>
     </Col>
@@ -35,21 +35,21 @@ const Statistics = () => (
       <Card className="flex-fill">
         <CardHeader>
           {/* <span className="badge badge-warning float-right">Annual</span> */}
-          <h5 className="card-title mb-0">Failed</h5>
+          <h5 className="card-title mb-0">Total Income</h5>
         </CardHeader>
         <CardBody className="my-2">
           <Row className="d-flex align-items-center mb-4">
             <Col xs="12">
-              <span className=" h2 font-weight-dark">10 </span>
-              <span className="text-muted">out of 100</span>
+              <span className=" h2 font-weight-dark">12446.00 LKR </span>
+              <span className="text-muted"></span>
             </Col>
           </Row>
 
-          <Progress
+          {/* <Progress
             color="warning"
             value={10}
             className="progress-sm shadow-sm mb-1"
-          />
+          /> */}
         </CardBody>
       </Card>
     </Col>
@@ -57,13 +57,13 @@ const Statistics = () => (
       <Card className="flex-fill">
         <CardHeader>
           {/* <span className="badge badge-info float-right">Monthly</span> */}
-          <h5 className="card-title mb-0">Written</h5>
+          <h5 className="card-title mb-0">Pending Orders</h5>
         </CardHeader>
         <CardBody className="my-2">
           <Row className="d-flex align-items-center mb-4">
             <Col xs="12">
               <span className=" h2 font-weight-dark">43 </span>
-              <span className="text-muted">out of 100</span>
+              <span className="text-muted">out of 88</span>
             </Col>
           </Row>
 
@@ -79,19 +79,19 @@ const Statistics = () => (
       <Card className="flex-fill">
         <CardHeader>
           {/* <span className="badge badge-success float-right">Yearly</span> */}
-          <h5 className="card-title mb-0">Medical</h5>
+          <h5 className="card-title mb-0">Completed Orders</h5>
         </CardHeader>
         <CardBody className="my-2">
           <Row className="d-flex align-items-center mb-4">
             <Col xs="12">
-              <span className=" h2 font-weight-dark">57 </span>
-              <span className="text-muted">out of 100</span>
+              <span className=" h2 font-weight-dark">17 </span>
+              <span className="text-muted">out of 88</span>
             </Col>
           </Row>
 
           <Progress
             color="success"
-            value={57}
+            value={17}
             className="progress-sm shadow-sm mb-1"
           />
         </CardBody>
