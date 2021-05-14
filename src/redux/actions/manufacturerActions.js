@@ -4,14 +4,15 @@ import { alertActions } from "./alertActions";
 
 export const manufacturerActions = {
   create,
-  getManufacturers
+  getManufacturers, update,
+  deleteManufacturer
 };
 
-function create(manufacturer, organization_id) {
+function create(manufacturer) {
   return dispatch => {
     dispatch(request({ manufacturer }));
 
-    return manufacturerService.create(manufacturer, organization_id).then(
+    return manufacturerService.create(manufacturer).then(
       manufacturer => {
         dispatch(success(manufacturer));
         return manufacturer;
@@ -55,5 +56,59 @@ function getManufacturers() {
   }
   function failure(error) {
     return { type: types.GET_MANUFACTURERS_FAILURE, error };
+  }
+}
+
+function update(manufacturer, id) {
+  return dispatch => {
+    dispatch(request({ manufacturer }));
+
+    return manufacturerService.update(manufacturer, id).then(
+      manufacturer => {
+        dispatch(success(manufacturer));
+        return manufacturer;
+      },
+      error => {
+        dispatch(failure(error));
+        dispatch(alertActions.error(error));
+      }
+    );
+  };
+
+  function request(manufacturer) {
+    return { type: types.UPDATE_MANUFACTURER_REQUEST, manufacturer };
+  }
+  function success(manufacturer) {
+    return { type: types.UPDATE_MANUFACTURER_SUCCESS, manufacturer };
+  }
+  function failure(error) {
+    return { type: types.UPDATE_MANUFACTURER_FAILURE, error };
+  }
+}
+
+function deleteManufacturer( id) {
+  return (dispatch) => {
+    dispatch(request( ));
+
+    return manufacturerService.deleteManufacturer( id).then(
+      (manufacturer) => {
+        dispatch(success(manufacturer));
+        return manufacturer;
+      },
+      (error) => {
+        dispatch(failure(error));
+        dispatch(alertActions.error(error));
+      }
+    );
+  };
+
+  function request(manufacturer) {
+    return { type: types.DELETE_MANUFACTURER_REQUEST, manufacturer };
+  }
+  function success(manufacturer) {
+    return { type: types.DELETE_MANUFACTURER_SUCCESS, manufacturer };
+  }
+  function failure(error) {
+    return { type: types.DELETE_MANUFACTURER_FAILURE, error };
   }
 }

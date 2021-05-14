@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { categoryActions } from "../../redux/actions/categoryActions";
+import { manufacturerActions } from "../../redux/actions/manufacturerActions";
 import {
   Button,
   Card,
@@ -61,7 +61,7 @@ const UsersStaff = (prop) => (
             <div className="float-right pull-right">
               <SearchBar {...props.searchProps} />
             </div>
-            <CardTitle tag="h4">{prop.tableData.length} Categories Listed</CardTitle>
+            <CardTitle tag="h4">{prop.tableData.length} Manufacturers Listed</CardTitle>
           </CardHeader>
           <CardBody>
             <BootstrapTable
@@ -90,12 +90,12 @@ class VehicleSettings extends React.Component {
     toastrTitle: "",
     toastrMessage: "",
     values: {
-      categoryType: "",
+      manufacturerName: "",
       isActive: true,
     },
     reg_year: new Date(),
-    categories:[],
-    edit_category:{}
+    manufacturers:[],
+    edit_manufacturer:{}
   };
 
   setRegYear = (date) => {
@@ -124,16 +124,16 @@ class VehicleSettings extends React.Component {
   }
 
   componentDidMount() {
-    this.getCategories();
+    this.getManufacturers();
   }
 
-  getCategories = () => {
-    this.props.getCategories().then((categories) => {
-      if (categories.categories && categories.categories.status == 200) {
+  getManufacturers = () => {
+    this.props.getManufacturers().then((manufacturers) => {
+      if (manufacturers.manufacturers && manufacturers.manufacturers.status == 200) {
         this.setState({
-          categories: categories.categories.data,
-          total: categories.categories.data.length,
-          totalCategories: categories.categories.data.length,
+          manufacturers: manufacturers.manufacturers.data,
+          total: manufacturers.manufacturers.data.length,
+          totalManufacturers: manufacturers.manufacturers.data.length,
         });
       }
     });
@@ -155,8 +155,8 @@ class VehicleSettings extends React.Component {
 
   tableColumns = [
     {
-      dataField: "categoryType",
-      text: "Category Type",
+      dataField: "manufacturerName",
+      text: "Manufacturer",
       sort: false,
     },
     {
@@ -189,7 +189,7 @@ class VehicleSettings extends React.Component {
     return (
       <div>
         <Button
-            onClick={()=> this.editCategory(row)}
+            onClick={()=> this.editManufacturer(row)}
           color="outline"
           className="mt-n1"
         >
@@ -206,9 +206,9 @@ class VehicleSettings extends React.Component {
     );
   }
 
-  editCategory = (row) =>{
+  editManufacturer = (row) =>{
     const newState = this.state
-    newState.edit_category = row
+    newState.edit_manufacturer = row
     newState.editToggle = true
     this.setState(newState)
   }
@@ -233,7 +233,7 @@ class VehicleSettings extends React.Component {
   };
 
   confirmDeleteItem = () =>{
-    this.props.deleteCategory(this.state.deleteID).then((item) => {
+    this.props.deleteManufacturer(this.state.deleteID).then((item) => {
       if (item.status === 200) {
         this.setState({
           toastrInstance: "success",
@@ -260,7 +260,7 @@ class VehicleSettings extends React.Component {
 
   handleUpdateFieldChange = (field, value) => {
     const newState = { ...this.state };
-    newState.edit_category[field] = value;
+    newState.edit_manufacturer[field] = value;
     this.setState(newState);
   };
 
@@ -277,7 +277,7 @@ class VehicleSettings extends React.Component {
   handleSubmit = async (event) => {
     console.log(this.state)
     this.props
-      .createCategory(this.state.values)
+      .createManufacturer(this.state.values)
       .then((resp) => {
         if (resp) {
           console.log(resp)
@@ -286,7 +286,7 @@ class VehicleSettings extends React.Component {
               index: false,
               toastrInstance: "success",
               toastrTitle: "Success",
-              toastrMessage: "You have successfully created a category",
+              toastrMessage: "You have successfully created a manufacturer",
             });
             this.showToastr();
             this.props.history.push("/settings", {
@@ -308,7 +308,7 @@ class VehicleSettings extends React.Component {
   handleUpdate = async (event) => {
     console.log(this.state)
     this.props
-      .updateCategories(this.state.edit_category, this.state.edit_category._id)
+      .updateManufacturer(this.state.edit_manufacturer, this.state.edit_manufacturer._id)
       .then((resp) => {
         if (resp) {
           console.log(resp)
@@ -317,9 +317,9 @@ class VehicleSettings extends React.Component {
               editToggle: false,
               toastrInstance: "success",
               toastrTitle: "Success",
-              toastrMessage: "You have successfully updated a category",
+              toastrMessage: "You have successfully updated a manufacturer",
             });
-            this.getCategories()
+            this.getManufacturers()
             this.showToastr();
             window.location.reload();
             this.props.history.push("/settings", {
@@ -342,7 +342,7 @@ class VehicleSettings extends React.Component {
       <Container fluid className="p-0">
         <div className=" float-right pull-right ">
           <Button onClick={() => this.toggle()} className="" color="info">
-            Add New Category
+            Add New Manufacturer
           </Button>
         </div>
         <Modal
@@ -351,7 +351,7 @@ class VehicleSettings extends React.Component {
           centered
           size="md"
         >
-          <ModalHeader toggle={() => this.toggle()}>Add Category</ModalHeader>
+          <ModalHeader toggle={() => this.toggle()}>Add Manufacturer</ModalHeader>
           <AvForm
             onValidSubmit={this.handleSubmit}
             onInvalidSubmit={this.handleInvalidSubmit}
@@ -364,10 +364,10 @@ class VehicleSettings extends React.Component {
                 <Col sm={8}>
                   <AvField
                     type="text"
-                    name="categoryType"
-                    value={this.state.values.categoryType}
+                    name="manufacturerName"
+                    value={this.state.values.manufacturerName}
                     onChange={(event) =>
-                      this.handleFieldChange("categoryType", event.target.value)
+                      this.handleFieldChange("manufacturerName", event.target.value)
                     }
                     validate={{
                       required: {
@@ -397,7 +397,7 @@ class VehicleSettings extends React.Component {
             </ModalBody>
             <ModalFooter>
               <Button color="primary" type="submit">
-                Add Category
+                Add Manufacturer
               </Button>
 
             </ModalFooter>
@@ -410,7 +410,7 @@ class VehicleSettings extends React.Component {
           centered
           size="md"
         >
-          <ModalHeader toggle={() => this.editToggle()}>Edit Category</ModalHeader>
+          <ModalHeader toggle={() => this.editToggle()}>Edit Manufacturer</ModalHeader>
           <AvForm
             onValidSubmit={this.handleUpdate}
             onInvalidSubmit={this.handleInvalidSubmit}
@@ -423,10 +423,10 @@ class VehicleSettings extends React.Component {
                 <Col sm={8}>
                   <AvField
                     type="text"
-                    name="categoryType"
-                    value={this.state.edit_category?.categoryType}
+                    name="manufacturerName"
+                    value={this.state.edit_manufacturer?.manufacturerName}
                     onChange={(event) =>
-                      this.handleUpdateFieldChange("categoryType", event.target.value)
+                      this.handleUpdateFieldChange("manufacturerName", event.target.value)
                     }
                     validate={{
                       required: {
@@ -456,7 +456,7 @@ class VehicleSettings extends React.Component {
           <ModalHeader toggle={() => this.deleteToggle()}>Alert</ModalHeader>
 
           <ModalBody className="text-center m-3">
-            <p className="mb-0">Are you sure you want to delete this category?</p>
+            <p className="mb-0">Are you sure you want to delete this manufacturer?</p>
           </ModalBody>
           <ModalFooter>
             <Button color="danger" onClick={() => this.confirmDeleteItem()}>
@@ -467,8 +467,8 @@ class VehicleSettings extends React.Component {
             </Button>{" "}
           </ModalFooter>
         </Modal>
-        <h1 className="h3 mb-3">Categories</h1>
-        <UsersStaff tableColumns={this.tableColumns}  tableData={this.state.categories}/>
+        <h1 className="h3 mb-3">Manufacturers</h1>
+        <UsersStaff tableColumns={this.tableColumns}  tableData={this.state.manufacturers}/>
       </Container>
     );
   }
@@ -479,10 +479,10 @@ const mapStateToProps = (state) => {
 };
 
 const mapActionToProps = {
-  createCategory: categoryActions.create,
-  getCategories: categoryActions.getCategories,
-  updateCategories: categoryActions.update,
-  deleteCategory : categoryActions.deleteCategory
+  createManufacturer: manufacturerActions.create,
+  getManufacturers: manufacturerActions.getManufacturers,
+  updateManufacturer: manufacturerActions.update,
+  deleteManufacturer : manufacturerActions.deleteManufacturer
 };
 
 export default withRouter(connect(mapStateToProps, mapActionToProps)(VehicleSettings));

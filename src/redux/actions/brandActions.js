@@ -4,7 +4,9 @@ import { alertActions } from "./alertActions";
 
 export const brandActions = {
   create,
-  getBrands
+  getBrands,
+  update,
+  deleteBrand
 };
 
 function create(brand, organization_id) {
@@ -57,3 +59,59 @@ function getBrands() {
     return { type: types.GET_BRANDS_FAILURE, error };
   }
 }
+
+
+function update(brand, id) {
+  return dispatch => {
+    dispatch(request({ brand }));
+
+    return brandService.update(brand, id).then(
+      brand => {
+        dispatch(success(brand));
+        return brand;
+      },
+      error => {
+        dispatch(failure(error));
+        dispatch(alertActions.error(error));
+      }
+    );
+  };
+
+  function request(brand) {
+    return { type: types.UPDATE_BRAND_REQUEST, brand };
+  }
+  function success(brand) {
+    return { type: types.UPDATE_BRAND_SUCCESS, brand };
+  }
+  function failure(error) {
+    return { type: types.UPDATE_BRAND_FAILURE, error };
+  }
+}
+
+function deleteBrand( id) {
+  return (dispatch) => {
+    dispatch(request( ));
+
+    return brandService.deleteBrand( id).then(
+      (brand) => {
+        dispatch(success(brand));
+        return brand;
+      },
+      (error) => {
+        dispatch(failure(error));
+        dispatch(alertActions.error(error));
+      }
+    );
+  };
+
+  function request(brand) {
+    return { type: types.DELETE_BRAND_REQUEST, brand };
+  }
+  function success(brand) {
+    return { type: types.DELETE_BRAND_SUCCESS, brand };
+  }
+  function failure(error) {
+    return { type: types.DELETE_BRAND_FAILURE, error };
+  }
+}
+

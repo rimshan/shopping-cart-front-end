@@ -36,8 +36,6 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toastr } from "react-redux-toastr";
 const { SearchBar } = Search;
 
-
-
 const ItemsTable = (props) => {
   const tableData = props.items;
   return (
@@ -93,7 +91,7 @@ class Items extends React.Component {
     this.getAllItems(10);
   }
 
-   tableColumns = [
+  tableColumns = [
     {
       dataField: "productName",
       text: "Name",
@@ -140,24 +138,26 @@ class Items extends React.Component {
       sort: false,
     },
   ];
-  
-   nameFormatter(cell, row) {
+
+  nameFormatter(cell, row) {
     return cell;
   }
-  
-   statusFormatter(cell, row) {
+
+  statusFormatter(cell, row) {
     if (row) {
       if (cell === 1) {
         return (
           <span className="badge badge-danger ml-0 mr-1 mb-1">Inactive</span>
-        );   
+        );
       } else {
-        return <span className="badge badge-success ml-0 mr-1 mb-1">Active</span>;
+        return (
+          <span className="badge badge-success ml-0 mr-1 mb-1">Active</span>
+        );
       }
     }
   }
-  
-   actionFormatter(cell, row) {
+
+  actionFormatter(cell, row) {
     if (row) {
       return (
         <div>
@@ -175,7 +175,7 @@ class Items extends React.Component {
             <Edit2 className="align-middle ml-1" size={18} />
           </Button>
           <Button
-            onClick={()=> this.deleteItem(row._id)}
+            onClick={() => this.deleteItem(row._id)}
             color="outline"
             className="mt-n1 "
           >
@@ -215,12 +215,12 @@ class Items extends React.Component {
     });
   };
 
-  deleteItem =(id) => {
+  deleteItem = (id) => {
     this.setState((state) => ({
       deleteToggle: !state.deleteToggle,
-      deleteID: id
+      deleteID: id,
     }));
-  }
+  };
 
   deleteToggle = () => {
     this.setState((state) => ({
@@ -228,7 +228,7 @@ class Items extends React.Component {
     }));
   };
 
-  confirmDeleteItem = () =>{
+  confirmDeleteItem = () => {
     this.props.deleteItem(this.state.deleteID).then((item) => {
       if (item.status === 200) {
         this.setState({
@@ -238,7 +238,7 @@ class Items extends React.Component {
         });
         this.showToastr();
         this.getAllItems();
-      }else{
+      } else {
         this.setState({
           toastrInstance: "error",
           toastrTitle: "Error",
@@ -247,7 +247,7 @@ class Items extends React.Component {
         this.showToastr();
       }
     });
-  }
+  };
 
   render() {
     return (
@@ -271,7 +271,7 @@ class Items extends React.Component {
           getAllItems={this.getAllItems}
         />
 
-<Modal
+        <Modal
           isOpen={this.state.deleteToggle}
           toggle={() => this.deleteToggle()}
           centered
@@ -280,15 +280,10 @@ class Items extends React.Component {
           <ModalHeader toggle={() => this.deleteToggle()}>Alert</ModalHeader>
 
           <ModalBody className="text-center m-3">
-            <p className="mb-0">
-              Are you sure you want to delete this item?
-            </p>
+            <p className="mb-0">Are you sure you want to delete this item?</p>
           </ModalBody>
           <ModalFooter>
-            <Button
-              color="danger"
-             onClick={() =>this.confirmDeleteItem()}
-            >
+            <Button color="danger" onClick={() => this.confirmDeleteItem()}>
               Yes
             </Button>
             <Button color="secondary" onClick={() => this.deleteToggle()}>

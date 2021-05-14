@@ -1,9 +1,9 @@
 import React from "react";
 import AccountSettings from "./AccountSettings";
 import CompanySettings from "./CompanySettings";
-import UsersStaffSettings from "./UsersStaffSettings";
+import BrandSettings from "./BrandSettings";
 import CategoriesSettings from "./CategoriesSettings";
-import BranchesSettings from "./BranchesSettings";
+import ManufacturerSettings from "./ManufacturerSettings";
 import {
   Card,
   Col,
@@ -37,15 +37,6 @@ const Navigation = props => (
       <ListGroupItem
         tag="a"
         href="#"
-        active={props.state.view === "users_staff" ? true : false}
-        action
-        onClick={() => props.onNavigationClick("users_staff")}
-      >
-        Users {"&"} Staff
-      </ListGroupItem>
-      <ListGroupItem
-        tag="a"
-        href="#"
         active={props.state.view === "categories" ? true : false}
         action
         onClick={() => props.onNavigationClick("categories")}
@@ -55,11 +46,20 @@ const Navigation = props => (
       <ListGroupItem
         tag="a"
         href="#"
-        active={props.state.view === "branches" ? true : false}
+        active={props.state.view === "manufacturer" ? true : false}
         action
-        onClick={() => props.onNavigationClick("branches")}
+        onClick={() => props.onNavigationClick("manufacturer")}
       >
-        Branches
+        Manufacturers
+      </ListGroupItem>
+      <ListGroupItem
+        tag="a"
+        href="#"
+        active={props.state.view === "brand" ? true : false}
+        action
+        onClick={() => props.onNavigationClick("brand")}
+      >
+        Brands
       </ListGroupItem>
     </ListGroup>
   </Card>
@@ -93,9 +93,9 @@ class Settings extends React.Component {
           <Col md="9" xl="10">
             {this.state.view === "account" && <AccountSettings />}
             {this.state.view === "company" && <CompanySettings />}
-            {this.state.view === "users_staff" && <UsersStaffSettings />}
             {this.state.view === "categories" && <CategoriesSettings />}
-            {this.state.view === "branches" && <BranchesSettings />}
+            {this.state.view === "manufacturer" && <ManufacturerSettings />}
+            {this.state.view === "brand" && <BrandSettings />}
           </Col>
         </Row>
       </Container>

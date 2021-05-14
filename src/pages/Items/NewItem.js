@@ -145,7 +145,7 @@ const HorizontalForm = (props) => {
                   required: {
                     value: true,
                     errorMessage: "Item name is required!",
-                  }
+                  },
                 }}
               />
             </Col>
@@ -171,7 +171,7 @@ const HorizontalForm = (props) => {
                   required: {
                     value: true,
                     errorMessage: "Description is required!",
-                  }
+                  },
                 }}
               />
             </Col>
@@ -195,7 +195,7 @@ const HorizontalForm = (props) => {
                   required: {
                     value: true,
                     errorMessage: "Price is required!",
-                  }
+                  },
                 }}
               />
             </Col>
@@ -216,10 +216,9 @@ const HorizontalForm = (props) => {
                   required: {
                     value: true,
                     errorMessage: "Quantity is required!",
-                  }
+                  },
                 }}
               />
-       
             </Col>
           </FormGroup>
 
@@ -252,7 +251,7 @@ const HorizontalForm = (props) => {
                 options={props.categoriesOptionList}
                 styles={props.showCategoryError ? customStyles : ""}
               />
-               {props.showCategoryError && (
+              {props.showCategoryError && (
                 <span style={{ color: "red", fontSize: "12px" }}>
                   Category is required!
                 </span>
@@ -270,7 +269,7 @@ const HorizontalForm = (props) => {
                 options={props.manufacturersOptionList}
                 styles={props.showManufactureError ? customStyles : ""}
               />
-               {props.showManufactureError && (
+              {props.showManufactureError && (
                 <span style={{ color: "red", fontSize: "12px" }}>
                   Manufacturer is required!
                 </span>
@@ -287,7 +286,7 @@ const HorizontalForm = (props) => {
                 options={props.brandsOptionList}
                 styles={props.showBrandError ? customStyles : ""}
               />
-               {props.showBrandError && (
+              {props.showBrandError && (
                 <span style={{ color: "red", fontSize: "12px" }}>
                   Brand is required!
                 </span>
@@ -299,8 +298,6 @@ const HorizontalForm = (props) => {
     </Container>
   );
 };
-
-
 
 const ActionPanel = (props) => (
   <div className="mb-4">
@@ -354,15 +351,15 @@ class NewItems extends React.Component {
     item_option: [],
     item_options: [],
     values: {
-      attachments: []
+      attachments: [],
     },
     touched: {
       type: false,
       category: false,
       manufacturer: false,
-      brand: false
+      brand: false,
     },
-    submitting: false
+    submitting: false,
   };
 
   showToastr = () => {
@@ -404,7 +401,6 @@ class NewItems extends React.Component {
     this.getCategories();
   }
 
-
   getTypes = () => {
     this.props.getProductTypes().then((types) => {
       if (types.productTypes) {
@@ -418,9 +414,6 @@ class NewItems extends React.Component {
       }
     });
   };
-
-
-
 
   getManufacturers = () => {
     this.props.manufacturers().then((manufacturers) => {
@@ -500,7 +493,6 @@ class NewItems extends React.Component {
     }
   };
 
-
   handleCategoryChange = (newValue) => {
     if (newValue !== null && newValue.__isNew__) {
       const newState = { ...this.state };
@@ -519,10 +511,9 @@ class NewItems extends React.Component {
   };
 
   handleItemAttachments = async (fileItem) => {
-    const newState = this.state
+    const newState = this.state;
     newState.values.attachments.push(fileItem.file);
-    this.setState(newState)
-
+    this.setState(newState);
   };
 
   handleItemAttachmentsRemove = (fileItem) => {
@@ -558,7 +549,7 @@ class NewItems extends React.Component {
 
   handleInvalidSubmit = () => {
     const newState = { ...this.state };
-    newState.submitting =  false;
+    newState.submitting = false;
     newState.touched.type = true;
     newState.touched.brand = true;
     newState.touched.manufacturer = true;
@@ -572,51 +563,62 @@ class NewItems extends React.Component {
   };
 
   handleSubmit = async () => {
-    const {
-      values,
-    } = this.state;
+    const { values } = this.state;
     this.setState({
-      submitting: true
-    })
-    if(values.productType && values.productCategory && values.productManufacturer && values.productBrand){
+      submitting: true,
+    });
+    if (values.attachments.length > 0) {
+      if (
+        values.productType &&
+        values.productCategory &&
+        values.productManufacturer &&
+        values.productBrand
+      ) {
+        var bodyFormData = new FormData();
+        bodyFormData.append("productName", values.productName);
+        bodyFormData.append("productDescription", values.productDescription);
+        bodyFormData.append("productPrice", values.productPrice);
+        bodyFormData.append("productCategory", values.productCategory);
+        bodyFormData.append("productType", values.productType);
+        bodyFormData.append("productBrand", values.productBrand);
+        bodyFormData.append("productQuantity", values.productQuantity);
+        bodyFormData.append("productManufacturer", values.productManufacturer);
+        bodyFormData.append("file", values.attachments[0]);
 
-      var bodyFormData = new FormData
-      bodyFormData.append('productName', values.productName)
-      bodyFormData.append('productDescription', values.productDescription)
-      bodyFormData.append('productPrice', values.productPrice)
-      bodyFormData.append('productCategory', values.productCategory)
-      bodyFormData.append('productType', values.productType)
-      bodyFormData.append('productBrand', values.productBrand)
-      bodyFormData.append('productQuantity', values.productQuantity)
-      bodyFormData.append('productManufacturer', values.productManufacturer)
-      bodyFormData.append('file', values.attachments[0])
+        this.props.createNewItem(bodyFormData).then((item) => {
+          if (item) {
+            if (item.status === 200) {
+              this.setState({
+                submitting: false,
+                toastrInstance: "success",
+                toastrTitle: "Success",
 
-      this.props.createNewItem(bodyFormData).then((item) => {
-        if (item) {
-          if (item.status === 200) {
-            this.setState({
-              submitting:false,
-              toastrInstance: "success",
-              toastrTitle: "Success",
-            
-              toastrMessage: "You have successfully created a item",
-            });
-            this.showToastr();
-            this.props.history.push("/items");
-          }else{
-            this.setState({
-              submitting:false,
-              toastrInstance: "error",
-              toastrTitle: "Error",
-              toastrMessage: "Something went wrong please try again",
-            });
-            this.showToastr();
+                toastrMessage: "You have successfully created a item",
+              });
+              this.showToastr();
+              this.props.history.push("/items");
+            } else {
+              this.setState({
+                submitting: false,
+                toastrInstance: "error",
+                toastrTitle: "Error",
+                toastrMessage: "Something went wrong please try again",
+              });
+              this.showToastr();
+            }
           }
-        }
+        });
+      } else {
+        this.handleInvalidSubmit();
+      }
+    } else {
+      this.setState({
+        submitting: false,
+        toastrInstance: "error",
+        toastrTitle: "Error",
+        toastrMessage: "Please add an attachment",
       });
-  
-    }else{
-      this.handleInvalidSubmit()
+      this.showToastr();
     }
   };
 
@@ -624,7 +626,8 @@ class NewItems extends React.Component {
     const { touched, values, submitting } = this.state;
     const showTypeError = touched.type && !values.productType;
     const showCategoryError = touched.category && !values.productCategory;
-    const showManufactureError = touched.manufacturer && !values.productManufacturer;
+    const showManufactureError =
+      touched.manufacturer && !values.productManufacturer;
     const showBrandError = touched.brand && !values.productBrand;
     return (
       <Container>
@@ -653,7 +656,7 @@ class NewItems extends React.Component {
             showManufactureError={showManufactureError}
             showBrandError={showBrandError}
           />
-          <ActionPanel props={this.props} submitting={submitting}/>
+          <ActionPanel props={this.props} submitting={submitting} />
         </AvForm>
       </Container>
     );
